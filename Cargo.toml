@@ -1,0 +1,18 @@
+[package]
+name = "spm"
+version = "0.0.1"
+authors = ["clearloop <udtrokia@gmail.com>"]
+edition = "2018"
+description = "Substrate pallet manager"
+repository = "https://github.com/clearloop/spm"
+license = "MIT"
+documentation = "https://docs.rs/spm"
+homepage = "https://github.com/clearloop/spm"
+include = ["src/**/*", "Cargo.toml", "./README.md"]
+keywords = ["substrate"]
+readme = './README.md'
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+# toml = "0.5.6"
