@@ -1,3 +1,5 @@
+mod cmds;
+
 pub const PALLETS: [&'static str; 42] = [
     "assets",
     "aura",

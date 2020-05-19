@@ -1,0 +1,9 @@
+[book]
+authors = ["clearloop"]
+language = "en"
+multilingual = false
+src = "book"
+title = "Substrate Pallet Manager"
+
+[build]
+build-dir = "docs"
