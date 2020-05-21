@@ -1,13 +1,13 @@
 [package]
-name = "spm"
+name = "sup"
 version = "0.0.1"
 authors = ["clearloop <udtrokia@gmail.com>"]
 edition = "2018"
-description = "Substrate pallet manager"
-repository = "https://github.com/clearloop/spm"
+description = "Substrate package manager"
+repository = "https://github.com/clearloop/sup"
 license = "MIT"
-documentation = "https://docs.rs/spm"
-homepage = "https://github.com/clearloop/spm"
+documentation = "https://docs.rs/sup"
+homepage = "https://github.com/clearloop/sup"
 include = ["src/**/*", "Cargo.toml", "./README.md"]
 keywords = ["substrate"]
 readme = './README.md'
@@ -15,9 +15,10 @@ readme = './README.md'
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [[bin]]
-name = "spm"
-path = "src/bin/spm.rs"
+name = "sup"
+path = "src/bin/sup.rs"
 
 [dependencies]
-# structopt = "0.3.14"
-# toml = "0.5.6"
+structopt = "0.3.14"
+toml = "0.5.6"
+git2 = "0.13.6"
