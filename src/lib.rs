@@ -1,6 +1,6 @@
 pub mod cmds;
 
-pub const PALLETS: [&'static str; 42] = [
+pub const PALLETS: [&str; 42] = [
     "assets",
     "aura",
     "authority-discovery",

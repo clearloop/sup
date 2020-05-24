@@ -63,6 +63,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "etc"
+version = "0.1.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f3dc7127983ace119d63b9538c5bf9a195ca19d5dae4099fcf7cb468ef4a7e0d"
+dependencies = [
+ "serde",
+]
+
+[[package]]
 name = "git2"
 version = "0.13.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -75,6 +84,15 @@ dependencies = [
  "openssl-probe",
  "openssl-sys",
  "url",
+]
+
+[[package]]
+name = "gita"
+version = "0.0.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b66021bb2be1fa1cb536915116eb3d5fcbcc822ddf7fe1559df56ac807e0e1a2"
+dependencies = [
+ "git2",
 ]
 
 [[package]]
@@ -262,6 +280,20 @@ name = "serde"
 version = "1.0.110"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "99e7b308464d16b56eba9964e4972a3eee817760ab60d88c3f86e1fecb08204c"
+dependencies = [
+ "serde_derive",
+]
+
+[[package]]
+name = "serde_derive"
+version = "1.0.110"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "818fbf6bfa9a42d3bfcaca148547aa00c7b915bec71d1757aa2d44ca68771984"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
 
 [[package]]
 name = "smallvec"
@@ -301,9 +333,10 @@ dependencies = [
 
 [[package]]
 name = "sup"
-version = "0.0.1"
+version = "0.0.3"
 dependencies = [
- "git2",
+ "etc",
+ "gita",
  "structopt",
  "toml",
 ]
