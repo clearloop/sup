@@ -1,7 +1,6 @@
 mod new;
-mod node_template;
 
-use node_template::NODE_TEMPLATE;
+use crate::registry::{NODE_TEMPLATE, SUBSTRATE_TAGS};
 use std::{env, path::PathBuf};
 use structopt::{clap::AppSettings, StructOpt};
 
@@ -18,9 +17,9 @@ enum Opt {
         #[structopt(name = "PATH")]
         path: PathBuf,
     },
-    // /// Update substrate dependencies listed in Cargo.toml
-    // #[structopt(alias = "update")]
-    // Update,
+    /// List substrate available tags
+    #[structopt(alias = "tags")]
+    Tags,
 }
 
 /// Exec commands
@@ -33,5 +32,11 @@ pub fn exec() {
         Opt::New { path } => {
             new::run(path, NODE_TEMPLATE);
         }
+        Opt::Tags => SUBSTRATE_TAGS[1..SUBSTRATE_TAGS.len() - 1]
+            .replace("\"", "")
+            .split(", ")
+            .collect::<Vec<&str>>()
+            .iter()
+            .for_each(|t| println!("{}", t)),
     }
 }

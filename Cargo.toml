@@ -1,6 +1,6 @@
 [package]
 name = "sup"
-version = "0.0.3"
+version = "0.0.4"
 authors = ["clearloop <udtrokia@gmail.com>"]
 edition = "2018"
 description = "Substrate package manager"
@@ -26,17 +26,12 @@ path = "src/bin/sup.rs"
 [dependencies]
 structopt = "0.3.14"
 toml = "0.5.6"
-
-[dependencies.etc]
-version = "0.1.7"
-features = ["serde-tree"]
+etc = { version = "0.1.7", features = ["serde-tree"]}
 
 # build deps
 [build-dependencies]
 toml = "0.5.6"
 gita = "0.0.2"
+etc = { version = "0.1.7", features = ["serde-tree"]}
 
-[build-dependencies.etc]
-version = "0.1.7"
-features = ["serde-tree"]
 
