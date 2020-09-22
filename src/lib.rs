@@ -1,2 +1,4 @@
-pub mod cmds;
-pub mod registry;
+pub mod cmd;
+mod registry;
+
+pub use registry::Registry;

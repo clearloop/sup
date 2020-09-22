@@ -1,3 +1,3 @@
 fn main() {
-    sup::cmds::exec();
+    sup::cmd::exec();
 }
