@@ -11,7 +11,7 @@ cargo install sup
 ## Usage
 
 ```rust
-sup 0.0.2
+sup 0.0.6
 
 USAGE:
     sup <SUBCOMMAND>
@@ -22,8 +22,8 @@ FLAGS:
 
 SUBCOMMANDS:
     help    Prints this message or the help of the given subcommand(s)
-    init    Create a new substrate package in an existing directory
     new     Create a new substrate package
+    tag     Tag current substrate chain or list substrate available tags
 
 ```
 
