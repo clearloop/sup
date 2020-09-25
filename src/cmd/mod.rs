@@ -1,6 +1,6 @@
 // mod new;
 use crate::Registry;
-use etc::Etc;
+use etc::{Etc, FileSystem};
 use std::path::PathBuf;
 use structopt::{clap::AppSettings, StructOpt};
 
@@ -19,6 +19,8 @@ enum Opt {
         #[structopt(short, default_value = "10")]
         limit: usize,
     },
+    /// Update registry
+    Update,
 }
 
 /// Exec commands
@@ -27,22 +29,15 @@ pub fn exec() {
     let registry = Registry::new();
     match opt {
         Opt::New { path } => {
-            let mut substrate = registry.0;
-            substrate.push_str("/bin/node-template");
-
-            // copy substrate to target path
-            let mut tree = Etc::from(PathBuf::from(substrate)).tree().unwrap();
-            tree.load().unwrap();
-            if let Some(mut children) = tree.children {
-                children
-                    .iter_mut()
-                    .for_each(|t| t.redir(path.clone()).unwrap());
-            }
-
+            let substrate = Etc::from(&registry.0);
+            let template = substrate
+                .find("node-template")
+                .expect(&format!("Could not find node-template in {:?}", registry.0));
+            etc::cp_r(template, PathBuf::from(&path)).expect("Generate node-template failed");
             println!("Created node-template {:?} succeed!", &path);
         }
         Opt::Tag { limit } => {
-            let mut tags = registry.list_tags();
+            let mut tags = registry.tag();
             let last = if limit < tags.len() || limit < 1 {
                 limit
             } else {
@@ -51,6 +46,10 @@ pub fn exec() {
 
             tags.reverse();
             println!("{:?}", &tags[..last]);
+        }
+        Opt::Update => {
+            println!("Fetching registry...");
+            registry.update()
         }
     }
 }
