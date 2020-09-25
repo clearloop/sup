@@ -4,6 +4,8 @@ use std::process::Command;
 
 mod manifest;
 
+pub use manifest::Manifest;
+
 /// Substrate registry
 pub struct Registry(
     /// Substrate git directory
