@@ -13,10 +13,10 @@ const PACKAGE_DEP_ANCHOR: &str = "package = \"";
 /// Override attr with new pattern
 fn attr(mut src: String, attr: &str, dst: &str) -> String {
     if src.contains(attr) {
-        let start = src.as_str().find(attr).unwrap_or(0);
-        let first_qoute = start + src.as_str()[start..].find('"').unwrap_or(0) + 1;
+        let begin = src.as_str().find(attr).unwrap_or(0);
+        let first_qoute = begin + src.as_str()[begin..].find('"').unwrap_or(0) + 1;
         let second_qoute = first_qoute + src.as_str()[first_qoute..].find('"').unwrap_or(0) + 1;
-        src.replace_range(start..second_qoute, dst);
+        src.replace_range(begin..second_qoute, dst);
     }
 
     src
@@ -35,6 +35,9 @@ fn contains_dep(ms: &str, dep: &str, anchor: &mut String, end_patt: &mut String)
         *anchor = BLOCK_DEP_ANCHOR.join(&dep);
         *end_patt = BLOCK_DEP_END_PATT.to_string();
     } else {
+        let pos = ms.find(&*anchor).unwrap_or(0);
+        let begin = ms[..pos].rfind('\n').unwrap_or(0);
+        *anchor = ms[begin..pos].to_string();
         return true;
     }
 
@@ -54,9 +57,9 @@ pub fn redirect(mani: &PathBuf, registry: &Registry) -> Result<()> {
             continue;
         }
 
-        let start = ms.as_str().find(&anchor).unwrap_or(0);
-        let end = start + ms.as_str()[start..].find(&end_patt).unwrap_or(0);
-        let mut patt = ms.as_str()[start..end].to_string();
+        let begin = ms.as_str().find(&anchor).unwrap_or(0);
+        let end = begin + ms.as_str()[begin..].find(&end_patt).unwrap_or(0);
+        let mut patt = ms.as_str()[begin..end].to_string();
         patt = attr(
             patt,
             PATH_ATTR_PATT,
@@ -65,7 +68,7 @@ pub fn redirect(mani: &PathBuf, registry: &Registry) -> Result<()> {
                 "https://github.com/paritytech/substrate.git"
             ),
         );
-        ms.replace_range(start..end, &patt);
+        ms.replace_range(begin..end, &patt);
     }
 
     target.write(ms.as_bytes())?;

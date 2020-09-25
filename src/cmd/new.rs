@@ -15,14 +15,18 @@ pub fn workspace(target: &PathBuf, registry: &Registry) -> Result<Manifest> {
     let mut mani = Manifest::default();
     let mut members = vec![];
     for ct in crates {
+        let ps = ct.to_string_lossy();
+        if ps.contains("/target/") {
+            continue;
+        }
+
         // Redirect deps
         redep(&ct, registry)?;
 
         // Register path
-        let ps = ct.to_string_lossy();
-        let start = ps.find(ts).unwrap_or(0) + ts.len();
-        if ps.len() > (start + 12) {
-            members.push(ps[(start + 1)..ps.len() - 11].to_string())
+        let begin = ps.find(ts).unwrap_or(0) + ts.len();
+        if ps.len() > (begin + 12) {
+            members.push(ps[(begin + 1)..ps.len() - 11].to_string())
         }
     }
 

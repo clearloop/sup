@@ -11,7 +11,7 @@ pub mod update;
 #[derive(StructOpt, Debug)]
 #[structopt(setting = AppSettings::InferSubcommands)]
 enum Opt {
-    /// Create a new substrate package
+    /// Create a new substrate template
     New {
         /// Package path
         #[structopt(name = "PATH")]

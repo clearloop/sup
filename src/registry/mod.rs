@@ -44,7 +44,7 @@ impl Registry {
                     .package
                     .name
             })
-            .filter(|s| !s.is_empty())
+            .filter(|s| !s.is_empty() && !s.contains("node-template"))
             .collect())
     }
 

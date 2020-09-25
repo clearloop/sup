@@ -17,7 +17,7 @@ cargo install sup
 ## Usage
 
 ```bash
-sup 0.0.9
+sup 0.1.0
 
 USAGE:
     sup <SUBCOMMAND>
@@ -28,7 +28,7 @@ FLAGS:
 
 SUBCOMMANDS:
     help      Prints this message or the help of the given subcommand(s)
-    new       Create a new substrate package
+    new       Create a new substrate template
     source    List Source
     tag       List available tags or apply tag to the current project
     update    Update registry
