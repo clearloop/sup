@@ -1,3 +1,3 @@
 fn main() {
-    sup::cmd::exec();
+    sup::cmd::exec().expect("sup crashed");
 }

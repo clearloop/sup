@@ -1,3 +1,4 @@
+use crate::result::Result;
 use std::process::Command;
 
 /// Substrate registry
@@ -8,7 +9,7 @@ pub struct Registry(
 
 impl Registry {
     /// New registry
-    pub fn new() -> Registry {
+    pub fn new() -> Result<Registry> {
         let mut substrate = dirs::home_dir().expect("Could not find home directory");
         substrate.push(".substrate");
 
@@ -21,28 +22,27 @@ impl Registry {
                 &registry,
                 "--depth=1",
             ])
-            .status()
-            .expect(&format!("Exec git clone failed in {}", &registry));
+            .status()?;
         }
 
-        Registry(registry.to_string())
+        Ok(Registry(registry.to_string()))
     }
 
     /// Update registry
-    pub fn update(&self) {
+    pub fn update(&self) -> Result<()> {
         Command::new("git")
             .args(vec!["-C", &self.0, "pull", "origin", "master"])
-            .status()
-            .expect(&format!("Exec `git pull` failed in {}", &self.0));
+            .status()?;
+
+        Ok(())
     }
 
     /// List substrate tags
-    pub fn tag(&self) -> Vec<String> {
-        String::from_utf8_lossy(
+    pub fn tag(&self) -> Result<Vec<String>> {
+        Ok(String::from_utf8_lossy(
             &Command::new("git")
                 .args(vec!["-C", &self.0, "tag", "--list"])
-                .output()
-                .unwrap()
+                .output()?
                 .stdout,
         )
         .to_string()
@@ -51,6 +51,6 @@ impl Registry {
         .iter()
         .filter(|t| t.starts_with('v'))
         .map(|t| t.to_string())
-        .collect()
+        .collect())
     }
 }
