@@ -3,8 +3,9 @@ use etc::{Etc, Read};
 use std::process::Command;
 
 mod manifest;
+mod redep;
 
-pub use manifest::Manifest;
+pub use self::{manifest::Manifest, redep::redirect as redep};
 
 /// Substrate registry
 pub struct Registry(
@@ -65,7 +66,7 @@ impl Registry {
                 .stdout,
         )
         .to_string()
-        .split("\n")
+        .split('\n')
         .collect::<Vec<&str>>()
         .iter()
         .filter(|t| t.starts_with('v'))

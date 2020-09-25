@@ -1,6 +1,6 @@
 //! Command `new`
 use crate::{
-    registry::{Manifest, Registry},
+    registry::{redep, Manifest, Registry},
     result::Result,
 };
 use etc::{Etc, FileSystem, Write};
@@ -9,24 +9,24 @@ use std::path::PathBuf;
 use toml::Serializer;
 
 /// Genrate workspace
-pub fn workspace(target: &PathBuf) -> Result<Manifest> {
+pub fn workspace(target: &PathBuf, registry: &Registry) -> Result<Manifest> {
     let crates = etc::find_all(target, "Cargo.toml")?;
     let ts = target.to_str().unwrap_or_default();
     let mut mani = Manifest::default();
-    mani.workspace.members = crates
-        .iter()
-        .map(|c| {
-            let ps = c.to_string_lossy();
-            let start = ps.find(ts).unwrap_or(0) + ts.len();
-            if ps.len() > (start + 12) {
-                ps[(start + 1)..ps.len() - 11].to_string()
-            } else {
-                "".to_string()
-            }
-        })
-        .filter(|s| !s.is_empty())
-        .collect();
+    let mut members = vec![];
+    for ct in crates {
+        // Redirect deps
+        redep(&ct, registry)?;
 
+        // Register path
+        let ps = ct.to_string_lossy();
+        let start = ps.find(ts).unwrap_or(0) + ts.len();
+        if ps.len() > (start + 12) {
+            members.push(ps[(start + 1)..ps.len() - 11].to_string())
+        }
+    }
+
+    mani.workspace.members = members;
     Ok(mani)
 }
 
@@ -37,7 +37,8 @@ pub fn exec(target: PathBuf) -> Result<()> {
     let template = substrate.find("node-template")?;
     etc::cp_r(template, PathBuf::from(&target))?;
 
-    let mani = workspace(&target)?;
+    // Create manifest
+    let mani = workspace(&target, &registry)?;
     let mut dst = String::with_capacity(128);
     mani.serialize(Serializer::pretty(&mut dst).pretty_array(true))?;
     Etc::from(&target).open("Cargo.toml")?.write(dst)?;
