@@ -6,6 +6,7 @@ use std::{
     io::Error as Io,
     result::Result as StdResult,
 };
+use toml::de::Error as Toml;
 
 /// The custom sup error
 pub struct Sup(String);
@@ -45,7 +46,7 @@ macro_rules! error {
     };
 }
 
-error! {Etc, Io, Sup}
+error! {Etc, Io, Sup, Toml}
 
 /// Sup Result
 pub type Result<T> = StdResult<T, Error>;

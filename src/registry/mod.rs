@@ -1,5 +1,8 @@
 use crate::result::Result;
+use etc::{Etc, Read};
 use std::process::Command;
+
+mod manifest;
 
 /// Substrate registry
 pub struct Registry(
@@ -14,18 +17,32 @@ impl Registry {
         substrate.push(".substrate");
 
         let registry = substrate.to_string_lossy().to_owned();
-        let mut git = Command::new("git");
         if !substrate.exists() {
-            git.args(vec![
-                "clone",
-                "https://github.com/paritytech/substrate.git",
-                &registry,
-                "--depth=1",
-            ])
-            .status()?;
+            Command::new("git")
+                .args(vec![
+                    "clone",
+                    "https://github.com/paritytech/substrate.git",
+                    &registry,
+                    "--depth=1",
+                ])
+                .status()?;
         }
 
         Ok(Registry(registry.to_string()))
+    }
+
+    /// List crates
+    pub fn source(&self) -> Result<Vec<String>> {
+        Ok(etc::find_all(&self.0, "Cargo.toml")?
+            .iter()
+            .map(|mani| {
+                toml::from_slice::<manifest::Manifest>(&Etc::from(mani).read().unwrap_or_default())
+                    .unwrap_or_default()
+                    .package
+                    .name
+            })
+            .filter(|s| !s.is_empty())
+            .collect())
     }
 
     /// Update registry

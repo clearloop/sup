@@ -16,17 +16,22 @@ enum Opt {
     /// List available tags or apply tag to the current project
     Tag {
         /// Avaiable while using this command to list tags
-        #[structopt(short, default_value = "10")]
+        #[structopt(short, long, default_value = "10")]
         limit: usize,
     },
     /// Update registry
     Update,
+    /// List Source
+    Source {
+        #[structopt(short, long, default_value = "")]
+        query: String,
+    },
 }
 
 /// Exec commands
 pub fn exec() -> Result<()> {
     let opt = Opt::from_args();
-    let registry = Registry::new().expect("woolala");
+    let registry = Registry::new().expect("Create registry failed");
     match opt {
         Opt::New { path } => {
             let substrate = Etc::from(&registry.0);
@@ -48,6 +53,22 @@ pub fn exec() -> Result<()> {
         Opt::Update => {
             println!("Fetching registry...");
             registry.update()?;
+        }
+        Opt::Source { query } => {
+            let source = registry.source()?;
+            println!(
+                "{}",
+                if query.is_empty() {
+                    source
+                } else {
+                    source
+                        .iter()
+                        .filter(|n| n.contains(&query))
+                        .map(|s| s.to_string())
+                        .collect::<Vec<String>>()
+                }
+                .join("\n")
+            );
         }
     }
 
