@@ -10,12 +10,21 @@ jobs:
         os: [macOS-latest, ubuntu-latest]
     steps:
       - name: Checkout the source code
-        uses: actions/checkout@master
+        uses: actions/checkout@v1
+      - name: Cache MMR Library
+        uses: actions/cache@v1
+        env:
+          cache-name: substrate-cache
         with:
-          rust-version: nightly
-      - name: Substrate
-        run: git submodule update --init
+          path: ./target
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*/Cargo.lock') }}
       - name: Build
-        run: cargo build --verbose
+        run: cargo build -vv
       - name: Run tests
-        run: cargo test --verbose
+        run: cargo test -vv
+      - name: Build tempalte
+        run: |
+          ./target/debug/sup new target/supnode
+          cd target/supnode
+          cargo build -vv
+          
