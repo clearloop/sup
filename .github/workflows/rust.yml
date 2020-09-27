@@ -11,7 +11,11 @@ jobs:
     steps:
       - name: Checkout the source code
         uses: actions/checkout@v1
-      - name: Cache MMR Library
+      - name: Install latest nightly
+        uses: actions-rs/toolchain@v1
+        with:
+            toolchain: nightly
+      - name: Cache Node Template
         uses: actions/cache@v1
         env:
           cache-name: substrate-cache
@@ -22,7 +26,7 @@ jobs:
         run: cargo build -vv
       - name: Run tests
         run: cargo test -vv
-      - name: Build tempalte
+      - name: Build template
         run: |
           ./target/debug/sup new target/supnode
           cd target/supnode
