@@ -36,7 +36,7 @@ fn contains_dep(ms: &str, dep: &str, anchor: &mut String, end_patt: &mut String)
         *end_patt = BLOCK_DEP_END_PATT.to_string();
     } else {
         let pos = ms.find(&*anchor).unwrap_or(0);
-        let begin = ms[..pos].rfind('\n').unwrap_or(0);
+        let begin = ms[..pos].rfind('\n').unwrap_or(0) + 1;
         *anchor = ms[begin..pos].to_string();
         return true;
     }
