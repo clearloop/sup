@@ -17,7 +17,7 @@ cargo install sup
 ## Usage
 
 ```bash
-sup 0.1.0
+sup 0.1.2
 
 USAGE:
     sup <SUBCOMMAND>

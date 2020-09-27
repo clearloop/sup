@@ -51,9 +51,9 @@ pub fn redirect(mani: &PathBuf, registry: &Registry) -> Result<()> {
     let bytes = target.read()?;
     let mut ms = String::from_utf8_lossy(&bytes).to_string();
     for dep in registry.source()? {
-        let mut anchor = format!("{}{}", dep, INLINE_DEP_ANCHOR);
+        let mut anchor = format!("{}{}", dep.0, INLINE_DEP_ANCHOR);
         let mut end_patt = INLINE_DEP_END_PATT.to_string();
-        if !contains_dep(&ms, &dep, &mut anchor, &mut end_patt) {
+        if !contains_dep(&ms, &dep.0, &mut anchor, &mut end_patt) {
             continue;
         }
 

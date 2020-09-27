@@ -5,6 +5,8 @@ use serde::{Deserialize, Serialize};
 pub struct Package {
     /// Package name
     pub name: String,
+    /// Package version
+    pub version: String,
 }
 
 /// Cargo manifest

@@ -7,6 +7,7 @@ pub mod new;
 pub mod source;
 pub mod tag;
 pub mod update;
+pub mod upgrade;
 
 #[derive(StructOpt, Debug)]
 #[structopt(setting = AppSettings::InferSubcommands)]
@@ -27,8 +28,19 @@ enum Opt {
     Update,
     /// List Source
     Source {
+        /// Show dependencies contain <query>
         #[structopt(short, long, default_value = "")]
         query: String,
+        /// If show versions
+        #[structopt(short, long)]
+        version: bool,
+    },
+    /// Upgrade sup project
+    Upgrade {
+        /// Project path
+        path: PathBuf,
+        /// Registry tag
+        tag: String,
     },
 }
 
@@ -39,7 +51,8 @@ pub fn exec() -> Result<()> {
         Opt::New { path } => new::exec(path)?,
         Opt::Tag { limit } => tag::exec(limit)?,
         Opt::Update => update::exec()?,
-        Opt::Source { query } => source::exec(query)?,
+        Opt::Upgrade { tag, path } => upgrade::exec(path, tag)?,
+        Opt::Source { query, version } => source::exec(query, version)?,
     }
 
     Ok(())

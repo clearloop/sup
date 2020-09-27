@@ -35,16 +35,18 @@ impl Registry {
     }
 
     /// List crates
-    pub fn source(&self) -> Result<Vec<String>> {
+    pub fn source(&self) -> Result<Vec<(String, String)>> {
         Ok(etc::find_all(&self.0, "Cargo.toml")?
             .iter()
             .map(|mani| {
-                toml::from_slice::<manifest::Manifest>(&Etc::from(mani).read().unwrap_or_default())
-                    .unwrap_or_default()
-                    .package
-                    .name
+                let pkg = toml::from_slice::<manifest::Manifest>(
+                    &Etc::from(mani).read().unwrap_or_default(),
+                )
+                .unwrap_or_default()
+                .package;
+                (pkg.name, pkg.version)
             })
-            .filter(|s| !s.is_empty() && !s.contains("node-template"))
+            .filter(|(name, _)| !name.is_empty() && !name.contains("node-template"))
             .collect())
     }
 
