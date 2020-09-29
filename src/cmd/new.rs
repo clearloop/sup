@@ -5,7 +5,7 @@ use crate::{
 };
 use etc::{Etc, FileSystem, Write};
 use serde::Serialize;
-use std::path::PathBuf;
+use std::{path::PathBuf, process::Command};
 use toml::Serializer;
 
 /// Genrate workspace
@@ -36,6 +36,12 @@ pub fn workspace(target: &PathBuf, registry: &Registry) -> Result<Manifest> {
 
 /// Exec command `new`
 pub fn exec(target: PathBuf) -> Result<()> {
+    // Check wasm
+    Command::new("rustup")
+        .args(vec!["target", "add", "wasm32-unknown-unknown"])
+        .status()?;
+
+    // Fetch registry
     let registry = Registry::new()?;
     let substrate = Etc::from(&registry.0);
     let template = substrate.find("node-template")?;
