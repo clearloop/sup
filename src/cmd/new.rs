@@ -37,8 +37,15 @@ pub fn workspace(target: &PathBuf, registry: &Registry) -> Result<Manifest> {
 /// Exec command `new`
 pub fn exec(target: PathBuf) -> Result<()> {
     // Check wasm
+    // Command::new("rustup").args(vec!["default", "nightly"])?;
     Command::new("rustup")
-        .args(vec!["target", "add", "wasm32-unknown-unknown"])
+        .args(vec![
+            "target",
+            "add",
+            "wasm32-unknown-unknown",
+            "--toolchain",
+            "nightly",
+        ])
         .status()?;
 
     // Fetch registry
