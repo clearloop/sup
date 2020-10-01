@@ -17,6 +17,9 @@ enum Opt {
         /// Package path
         #[structopt(name = "PATH")]
         path: PathBuf,
+        /// If skip toolchain check
+        #[structopt(short, long)]
+        skip: bool,
     },
     /// List available tags or apply tag to the current project
     Tag {
@@ -48,7 +51,7 @@ enum Opt {
 pub fn exec() -> Result<()> {
     let opt = Opt::from_args();
     match opt {
-        Opt::New { path } => new::exec(path)?,
+        Opt::New { path, skip } => new::exec(path, skip)?,
         Opt::Tag { limit } => tag::exec(limit)?,
         Opt::Update => update::exec()?,
         Opt::Upgrade { tag, path } => upgrade::exec(path, tag)?,
