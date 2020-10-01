@@ -1,6 +1,6 @@
 [package]
 name = "sup"
-version = "0.1.4"
+version = "0.1.5"
 authors = ["clearloop <udtrokia@gmail.com>"]
 edition = "2018"
 description = "Substrate package manager"
@@ -32,3 +32,6 @@ toml = "0.5.6"
 [dependencies.serde]
 version = "1"
 features = ["derive"]
+
+[profile.release]
+codegen-units=1

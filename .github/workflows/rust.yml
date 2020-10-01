@@ -11,10 +11,6 @@ jobs:
     steps:
       - name: Checkout the source code
         uses: actions/checkout@v1
-      - name: Install latest nightly
-        uses: actions-rs/toolchain@v1
-        with:
-            toolchain: nightly
       - name: Cache Node Template
         uses: actions/cache@v1
         env:
@@ -23,12 +19,12 @@ jobs:
           path: ./target
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*/Cargo.lock') }}
       - name: Build
-        run: cargo build -vv
+        run: cargo build -vv --release
       - name: Run tests
-        run: cargo test -vv
+        run: cargo test -vv --release
       - name: Build template
         run: |
-          ./target/debug/sup new target/supnode
+          ./target/release/sup new target/supnode
           cd target/supnode
-          cargo build -vv
+          cargo build -vv --release
           
