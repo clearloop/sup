@@ -53,7 +53,7 @@ impl Registry {
     /// Update registry
     pub fn update(&self) -> Result<()> {
         Command::new("git")
-            .args(vec!["-C", &self.0, "pull", "origin", "master"])
+            .args(vec!["-C", &self.0, "pull", "origin", "master", "--tags"])
             .status()?;
 
         Ok(())

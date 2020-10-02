@@ -16,22 +16,23 @@
 //!
 //! ## Usage
 //!
-//! ```bash
-//! sup 0.1.4
+//! ```text
+//! sup 0.1.7
 //!
-//! USAGE:
-//!     sup <SUBCOMMAND>
+//!     USAGE:
+//! sup <SUBCOMMAND>
 //!
-//! FLAGS:
-//!     -h, --help       Prints help information
+//!     FLAGS:
+//! -h, --help       Prints help information
 //!     -V, --version    Prints version information
 //!
-//! SUBCOMMANDS:
-//!     help      Prints this message or the help of the given subcommand(s)
-//!     new       Create a new substrate package
-//!     source    List Source
-//!     tag       List available tags or apply tag to the current project
-//!     update    Update registry
+//!     SUBCOMMANDS:
+//! help       Prints this message or the help of the given subcommand(s)
+//!     new        Create a new substrate node template
+//!     source     List Source
+//!     tag        List available tags
+//!     update     Update registry
+//!     upgrade    Upgrade substrate project
 //! ```
 //!
 //! [substrate]: https://github.com/paritytech/substrate

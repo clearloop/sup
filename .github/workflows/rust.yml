@@ -29,6 +29,7 @@ jobs:
           cargo build -vv --release
       - name: Upgrade template
         run: |
+          ./target/release/sup update
           ./target/release/sup upgrade -t v2.0.0-rc1
           cargo build -vv --release
           

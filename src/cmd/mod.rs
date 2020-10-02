@@ -12,7 +12,7 @@ pub mod upgrade;
 #[derive(StructOpt, Debug)]
 #[structopt(setting = AppSettings::InferSubcommands)]
 enum Opt {
-    /// Create a new substrate template
+    /// Create a new substrate node template
     New {
         /// Package path
         #[structopt(name = "PATH")]
@@ -21,9 +21,9 @@ enum Opt {
         #[structopt(short, long)]
         skip: bool,
     },
-    /// List available tags or apply tag to the current project
+    /// List available tags
     Tag {
-        /// Avaiable while using this command to list tags
+        /// The limit count of tags
         #[structopt(short, long, default_value = "10")]
         limit: usize,
     },
@@ -38,7 +38,7 @@ enum Opt {
         #[structopt(short, long)]
         version: bool,
     },
-    /// Upgrade sup project
+    /// Upgrade substrate project
     Upgrade {
         /// Project path
         #[structopt(short, long, default_value = ".")]
