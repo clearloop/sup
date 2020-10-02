@@ -41,8 +41,10 @@ enum Opt {
     /// Upgrade sup project
     Upgrade {
         /// Project path
+        #[structopt(short, long, default_value = ".")]
         path: PathBuf,
         /// Registry tag
+        #[structopt(short, long, default_value = "")]
         tag: String,
     },
 }

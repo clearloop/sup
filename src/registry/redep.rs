@@ -4,6 +4,7 @@ use etc::{Etc, Read, Write};
 use std::path::PathBuf;
 
 const PATH_ATTR_PATT: &str = "path = \"";
+const VERSION_ATTR_PATT: &str = "version = \"";
 const INLINE_DEP_ANCHOR: &str = " = ";
 const INLINE_DEP_END_PATT: &str = "\n";
 const BLOCK_DEP_ANCHOR: [&str; 2] = [".", "]"];
@@ -68,6 +69,7 @@ pub fn redirect(mani: &PathBuf, registry: &Registry) -> Result<()> {
                 "https://github.com/paritytech/substrate.git"
             ),
         );
+        patt = attr(patt, VERSION_ATTR_PATT, &format!("version = \"{}\"", dep.1));
         ms.replace_range(begin..end, &patt);
     }
 

@@ -1,9 +1,33 @@
 //! Comamnd Upgrade
 
-use crate::result::Result;
+use crate::{
+    registry::{redep, Registry},
+    result::{Error, Result},
+};
 use std::path::PathBuf;
 
 /// Exec command `upgrade`
-pub fn exec(_path: PathBuf, _tag: String) -> Result<()> {
+pub fn exec(path: PathBuf, mut tag: String) -> Result<()> {
+    // Check the tag
+    let registry = Registry::new()?;
+    let tags = registry.tag()?;
+    if tag.is_empty() && tags.len() > 0 {
+        tag = tags[tags.len() - 1].clone();
+    } else if !tags.contains(&tag) {
+        return Err(Error::Sup(format!(
+            "The registry at {} doesn't have tag {}",
+            registry.0, tag,
+        )));
+    }
+
+    // Checkout to the target tag
+    registry.checkout(&tag)?;
+    let crates = etc::find_all(path, "Cargo.toml")?;
+    for ct in crates {
+        redep(&ct, &registry)?;
+    }
+
+    // Checkout back to the latest commit
+    registry.checkout("master")?;
     Ok(())
 }

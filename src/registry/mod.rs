@@ -59,6 +59,15 @@ impl Registry {
         Ok(())
     }
 
+    /// Checkout to target tag
+    pub fn checkout(&self, patt: &str) -> Result<()> {
+        Command::new("git")
+            .args(vec!["-C", &self.0, "checkout", patt])
+            .status()?;
+
+        Ok(())
+    }
+
     /// List substrate tags
     pub fn tag(&self) -> Result<Vec<String>> {
         Ok(String::from_utf8_lossy(
