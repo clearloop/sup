@@ -17,7 +17,7 @@
 //! ## Usage
 //!
 //! ```text
-//! sup 0.1.7
+//! sup 0.1.9
 //!
 //!     USAGE:
 //! sup <SUBCOMMAND>

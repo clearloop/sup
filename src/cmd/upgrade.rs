@@ -7,9 +7,14 @@ use crate::{
 use std::path::PathBuf;
 
 /// Exec command `upgrade`
-pub fn exec(path: PathBuf, mut tag: String) -> Result<()> {
-    // Check the tag
+pub fn exec(path: PathBuf, mut tag: String, update: bool) -> Result<()> {
     let registry = Registry::new()?;
+    if update {
+        println!("Fetching registry...");
+        registry.update()?;
+    }
+
+    // tags
     let tags = registry.tag()?;
     if tag.is_empty() && tags.len() > 0 {
         tag = tags[tags.len() - 1].clone();

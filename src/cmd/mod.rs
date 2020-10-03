@@ -26,6 +26,9 @@ enum Opt {
         /// The limit count of tags
         #[structopt(short, long, default_value = "10")]
         limit: usize,
+        /// If update registry
+        #[structopt(short, long)]
+        update: bool,
     },
     /// Update registry
     Update,
@@ -46,6 +49,9 @@ enum Opt {
         /// Registry tag
         #[structopt(short, long, default_value = "")]
         tag: String,
+        /// If update registry
+        #[structopt(short, long)]
+        update: bool,
     },
 }
 
@@ -54,9 +60,9 @@ pub fn exec() -> Result<()> {
     let opt = Opt::from_args();
     match opt {
         Opt::New { path, skip } => new::exec(path, skip)?,
-        Opt::Tag { limit } => tag::exec(limit)?,
+        Opt::Tag { limit, update } => tag::exec(limit, update)?,
         Opt::Update => update::exec()?,
-        Opt::Upgrade { tag, path } => upgrade::exec(path, tag)?,
+        Opt::Upgrade { tag, path, update } => upgrade::exec(path, tag, update)?,
         Opt::Source { query, version } => source::exec(query, version)?,
     }
 
