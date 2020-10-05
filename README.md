@@ -7,8 +7,14 @@
 [![downloads](https://img.shields.io/crates/d/sup.svg)](https://crates.io/crates/sup)
 [![LICENSE](https://img.shields.io/crates/l/sup.svg)](https://choosealicense.com/licenses/apache-2.0/)
 
+Sup is a package manager of [substrate][substrate] which uses the github as registry,
+with `sup`, you can `create` you substrate node just in one command, `upgrade` or `downgrade`
+your substrate dependencies in one command as well.
 
-Master your substrate.
+For the official tutorial of creating [substrate][substrate] node without sup, please check
+out [Create Your First Substrate Chain][create-your-first-substrate-chain].
+
+For the example of using sup, please checkout the [GUIDE.md](./GUIDE.md).
 
 
 ## Installation
@@ -49,3 +55,4 @@ Apache-2.0
 
 [substrate]: https://github.com/paritytech/substrate
 [awesome]: https://github.com/substrate-developer-hub/awesome-substrate#ecosystem-tools
+[create-your-first-substrate-chain]: https://substrate.dev/docs/en/tutorials/create-your-first-substrate-chain/
