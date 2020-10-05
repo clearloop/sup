@@ -1,12 +1,12 @@
 # Substrate package manager
 
+<img align="right" width="400" src="https://raw.githubusercontent.com/w3f/General-Grants-Program/79ea44570c6b8f10b286817a3d1a768d29810065/src/badge_black.svg"/>
+
 [![etc](https://github.com/clearloop/sup/workflows/sup/badge.svg)](https://github.com/clearloop/sup)
 [![crate](https://img.shields.io/crates/v/sup.svg)](https://crates.io/crates/sup)
-[![doc](https://img.shields.io/badge/current-docs-brightgreen.svg)](https://docs.rs/sup/)
 [![downloads](https://img.shields.io/crates/d/sup.svg)](https://crates.io/crates/sup)
 [![LICENSE](https://img.shields.io/crates/l/sup.svg)](https://choosealicense.com/licenses/apache-2.0/)
 
-<img align="right" width="400" src="https://raw.githubusercontent.com/w3f/General-Grants-Program/79ea44570c6b8f10b286817a3d1a768d29810065/src/badge_black.svg">
 
 Master your substrate.
 
@@ -20,7 +20,7 @@ cargo install sup
 ## Usage
 
 ```bash
-sup 0.1.9
+sup 0.1.10
 
 USAGE:
     sup <SUBCOMMAND>
