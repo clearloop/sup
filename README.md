@@ -4,11 +4,14 @@
 [![crate](https://img.shields.io/crates/v/sup.svg)](https://crates.io/crates/sup)
 [![doc](https://img.shields.io/badge/current-docs-brightgreen.svg)](https://docs.rs/sup/)
 [![downloads](https://img.shields.io/crates/d/sup.svg)](https://crates.io/crates/sup)
-[![LICENSE](https://img.shields.io/crates/l/sup.svg)](https://choosealicense.com/licenses/mit/)
+[![LICENSE](https://img.shields.io/crates/l/sup.svg)](https://choosealicense.com/licenses/apache-2.0/)
 
-Master your substrate
+<img align="right" width="400" src="https://raw.githubusercontent.com/w3f/General-Grants-Program/79ea44570c6b8f10b286817a3d1a768d29810065/src/badge_black.svg">
 
-## Install
+Master your substrate.
+
+
+## Installation
 
 ```bash
 cargo install sup
@@ -35,4 +38,14 @@ SUBCOMMANDS:
     upgrade    Upgrade substrate project
 ```
 
+## Linked Projects
+
+Sup has been recorded in [substrate-developer-hub/awesome-substrate][awesome], 
+welcome to check other awesome projects listed in that repo.
+
+## LICENSE
+
+Apache-2.0
+
 [substrate]: https://github.com/paritytech/substrate
+[awesome]: https://github.com/substrate-developer-hub/awesome-substrate#ecosystem-tools
