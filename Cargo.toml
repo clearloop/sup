@@ -1,17 +1,18 @@
 [package]
 name = "sup"
-version = "0.1.9"
+version = "0.2.0"
 authors = ["clearloop <udtrokia@gmail.com>"]
 edition = "2018"
 description = "Substrate package manager"
 repository = "https://github.com/clearloop/sup"
-license = "MIT"
+license = "Apache-2.0"
 documentation = "https://docs.rs/sup"
 homepage = "https://github.com/clearloop/sup"
 include = [
   "src/**/*",
   "Cargo.toml",
   "README.md",
+  "GUIDE.md",
 ]
 keywords = ["substrate"]
 readme = './README.md'
