@@ -12,11 +12,20 @@ const BLOCK_DEP_END_PATT: &str = "\n\n\n";
 const PACKAGE_DEP_ANCHOR: &str = "package = \"";
 
 /// Override attr with new pattern
-fn attr(mut src: String, attr: &str, dst: &str) -> String {
+fn attr(mut src: String, attr: &str, dst: &str, end: Option<&str>) -> String {
+    let end_patt = if let Some(patt) = end { patt } else { "\"" };
     if src.contains(attr) {
         let begin = src.as_str().find(attr).unwrap_or(0);
-        let first_qoute = begin + src.as_str()[begin..].find('"').unwrap_or(0) + 1;
-        let second_qoute = first_qoute + src.as_str()[first_qoute..].find('"').unwrap_or(0) + 1;
+        let first_single_qoute = begin + src.as_str()[begin..].find("'").unwrap_or(0) + 1;
+        let first_double_qoute = begin + src.as_str()[begin..].find('"').unwrap_or(0) + 1;
+        let first_qoute =
+            if first_single_qoute < first_double_qoute && first_single_qoute > begin + 1 {
+                first_single_qoute
+            } else {
+                first_double_qoute
+            };
+        let second_qoute =
+            first_qoute + src.as_str()[first_qoute..].find(end_patt).unwrap_or(0) + 1;
         src.replace_range(begin..second_qoute, dst);
     }
 
@@ -51,8 +60,8 @@ pub fn redirect(mani: &PathBuf, registry: &Registry) -> Result<()> {
     let target = Etc::from(mani);
     let bytes = target.read()?;
     let mut ms = String::from_utf8_lossy(&bytes).to_string();
-    for (k, v) in registry.config.metadata.tuple() {
-        ms = attr(ms, k, &v);
+    for (k, v, e) in registry.config.metadata.tuple() {
+        ms = attr(ms, k, &v, e);
     }
     for dep in registry.source()? {
         let mut anchor = format!("{}{}", dep.0, INLINE_DEP_ANCHOR);
@@ -68,8 +77,14 @@ pub fn redirect(mani: &PathBuf, registry: &Registry) -> Result<()> {
             patt,
             PATH_ATTR_PATT,
             &format!("git = \"{}\"", registry.config.node.registry),
+            None,
         );
-        patt = attr(patt, VERSION_ATTR_PATT, &format!("version = \"{}\"", dep.1));
+        patt = attr(
+            patt,
+            VERSION_ATTR_PATT,
+            &format!("version = \"{}\"", dep.1),
+            None,
+        );
         ms.replace_range(begin..end, &patt);
     }
 

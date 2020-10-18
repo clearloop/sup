@@ -28,11 +28,15 @@ pub struct MetaData {
 
 impl MetaData {
     /// Generate the metadata tuples
-    pub fn tuple<'m>(&self) -> Vec<(&str, String)> {
+    pub fn tuple<'m>(&self) -> Vec<(&str, String, Option<&str>)> {
         vec![
-            ("authors", format!("{:?}", self.authors)),
-            ("version", self.version.to_string()),
-            ("license", self.license.to_string()),
+            (
+                "authors =",
+                format!("authors = {:?}", self.authors),
+                Some("]\n"),
+            ),
+            ("version =", format!("version = \"{}\"", self.version), None),
+            ("license =", format!("license = \"{}\"", self.license), None),
         ]
     }
 }
@@ -49,7 +53,7 @@ impl Default for MetaData {
         let mail = get(&git_config_str, "user.email");
         MetaData {
             authors: vec![format!("{} <{}>", author, mail)],
-            version: "0.1".to_string(),
+            version: "0.1.0".to_string(),
             license: "MIT".to_string(),
         }
     }
