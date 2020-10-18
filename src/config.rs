@@ -35,7 +35,7 @@ impl MetaData {
                 format!("authors = {:?}", self.authors),
                 Some("]\n"),
             ),
-            ("version =", format!("version = \"{}\"", self.version), None),
+            // ("version =", format!("version = \"{}\"", self.version), None),
             ("license =", format!("license = \"{}\"", self.license), None),
         ]
     }
