@@ -67,10 +67,12 @@
 
 #![warn(missing_docs)]
 pub mod cmd;
+mod config;
 mod registry;
 mod result;
 
 pub use self::{
+    config::Config,
     registry::Registry,
     result::{Error, Result},
 };
