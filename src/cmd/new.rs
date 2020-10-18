@@ -39,7 +39,10 @@ pub fn exec(target: PathBuf, skip: bool) -> Result<()> {
     // Check wasm
     if !skip {
         Command::new("rustup")
-            .args(vec!["install", "nightly-2020-10-05"])
+            .args(vec!["install", "nightly"])
+            .status()?;
+        Command::new("rustup")
+            .args(vec!["override", "set", "nightly-2020-10-05"])
             .status()?;
         Command::new("rustup")
             .args(vec![
