@@ -16,12 +16,12 @@ pub fn exec(path: PathBuf, mut tag: String, update: bool) -> Result<()> {
 
     // tags
     let tags = registry.tag()?;
-    if tag.is_empty() && tags.len() > 0 {
+    if tag.is_empty() && !tags.is_empty() {
         tag = tags[tags.len() - 1].clone();
     } else if !tags.contains(&tag) {
         return Err(Error::Sup(format!(
             "The registry at {} doesn't have tag {}",
-            registry.0, tag,
+            registry.dir, tag,
         )));
     }
 

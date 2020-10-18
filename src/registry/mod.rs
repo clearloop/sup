@@ -1,4 +1,4 @@
-use crate::result::Result;
+use crate::{result::Result, Config};
 use etc::{Etc, Read};
 use std::process::Command;
 
@@ -8,35 +8,36 @@ mod redep;
 pub use self::{manifest::Manifest, redep::redirect as redep};
 
 /// Substrate registry
-pub struct Registry(
+pub struct Registry {
+    /// Config
+    pub config: Config,
     /// Substrate git directory
-    pub String,
-);
+    pub dir: String,
+}
 
 impl Registry {
     /// New registry
     pub fn new() -> Result<Registry> {
+        let config = Config::new()?;
         let mut substrate = dirs::home_dir().expect("Could not find home directory");
-        substrate.push(".substrate");
+        substrate.push(format!(".sup/{}", config.node.name()));
 
         let registry = substrate.to_string_lossy().to_owned();
         if !substrate.exists() {
             Command::new("git")
-                .args(vec![
-                    "clone",
-                    "https://github.com/paritytech/substrate.git",
-                    &registry,
-                    "--depth=1",
-                ])
+                .args(vec!["clone", &config.node.registry, &registry, "--depth=1"])
                 .status()?;
         }
 
-        Ok(Registry(registry.to_string()))
+        Ok(Registry {
+            config,
+            dir: registry.to_string(),
+        })
     }
 
     /// List crates
     pub fn source(&self) -> Result<Vec<(String, String)>> {
-        Ok(etc::find_all(&self.0, "Cargo.toml")?
+        Ok(etc::find_all(&self.dir, "Cargo.toml")?
             .iter()
             .map(|mani| {
                 let pkg = toml::from_slice::<manifest::Manifest>(
@@ -53,7 +54,7 @@ impl Registry {
     /// Update registry
     pub fn update(&self) -> Result<()> {
         Command::new("git")
-            .args(vec!["-C", &self.0, "pull", "origin", "master", "--tags"])
+            .args(vec!["-C", &self.dir, "pull", "origin", "master", "--tags"])
             .status()?;
 
         Ok(())
@@ -62,7 +63,7 @@ impl Registry {
     /// Checkout to target tag
     pub fn checkout(&self, patt: &str) -> Result<()> {
         Command::new("git")
-            .args(vec!["-C", &self.0, "checkout", patt])
+            .args(vec!["-C", &self.dir, "checkout", patt])
             .status()?;
 
         Ok(())
@@ -72,7 +73,7 @@ impl Registry {
     pub fn tag(&self) -> Result<Vec<String>> {
         Ok(String::from_utf8_lossy(
             &Command::new("git")
-                .args(vec!["-C", &self.0, "tag", "--list"])
+                .args(vec!["-C", &self.dir, "tag", "--list"])
                 .output()?
                 .stdout,
         )

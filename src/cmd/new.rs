@@ -42,19 +42,22 @@ pub fn exec(target: PathBuf, skip: bool) -> Result<()> {
             .args(vec!["install", "nightly"])
             .status()?;
         Command::new("rustup")
+            .args(vec!["override", "set", "nightly-2020-10-05"])
+            .status()?;
+        Command::new("rustup")
             .args(vec![
                 "target",
                 "add",
                 "wasm32-unknown-unknown",
                 "--toolchain",
-                "nightly",
+                "nightly-2020-10-05",
             ])
             .status()?;
     }
 
     // Fetch registry
     let registry = Registry::new()?;
-    let substrate = Etc::from(&registry.0);
+    let substrate = Etc::from(&registry.dir);
     let template = substrate.find("node-template")?;
     etc::cp_r(template, PathBuf::from(&target))?;
 
