@@ -54,7 +54,7 @@ pub fn exec(target: PathBuf, skip: bool) -> Result<()> {
 
     // Fetch registry
     let registry = Registry::new()?;
-    let substrate = Etc::from(&registry.0);
+    let substrate = Etc::from(&registry.dir);
     let template = substrate.find("node-template")?;
     etc::cp_r(template, PathBuf::from(&target))?;
 
