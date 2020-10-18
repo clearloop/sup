@@ -51,6 +51,9 @@ pub fn redirect(mani: &PathBuf, registry: &Registry) -> Result<()> {
     let target = Etc::from(mani);
     let bytes = target.read()?;
     let mut ms = String::from_utf8_lossy(&bytes).to_string();
+    for (k, v) in registry.config.metadata.tuple() {
+        ms = attr(ms, k, &v);
+    }
     for dep in registry.source()? {
         let mut anchor = format!("{}{}", dep.0, INLINE_DEP_ANCHOR);
         let mut end_patt = INLINE_DEP_END_PATT.to_string();
@@ -64,10 +67,7 @@ pub fn redirect(mani: &PathBuf, registry: &Registry) -> Result<()> {
         patt = attr(
             patt,
             PATH_ATTR_PATT,
-            &format!(
-                "git = \"{}\"",
-                "https://github.com/paritytech/substrate.git"
-            ),
+            &format!("git = \"{}\"", registry.config.node.registry),
         );
         patt = attr(patt, VERSION_ATTR_PATT, &format!("version = \"{}\"", dep.1));
         ms.replace_range(begin..end, &patt);

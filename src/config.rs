@@ -26,6 +26,17 @@ pub struct MetaData {
     pub license: String,
 }
 
+impl MetaData {
+    /// Generate the metadata tuples
+    pub fn tuple<'m>(&self) -> Vec<(&str, String)> {
+        vec![
+            ("authors", format!("{:?}", self.authors)),
+            ("version", self.version.to_string()),
+            ("license", self.license.to_string()),
+        ]
+    }
+}
+
 impl Default for MetaData {
     fn default() -> MetaData {
         let git_config = Command::new("git")
