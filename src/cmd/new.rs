@@ -50,7 +50,7 @@ pub fn exec(target: PathBuf, skip: bool) -> Result<()> {
                 "add",
                 "wasm32-unknown-unknown",
                 "--toolchain",
-                "nightly",
+                "nightly-2020-10-05",
             ])
             .status()?;
     }
