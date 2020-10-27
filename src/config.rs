@@ -16,7 +16,7 @@ fn get(src: &str, key: &str) -> String {
 }
 
 /// MetaData Config
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct MetaData {
     /// Node authors
     pub authors: Vec<String>,
@@ -60,7 +60,7 @@ impl Default for MetaData {
 }
 
 /// Node Config
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct Node {
     /// Node Registry
     pub registry: String,
@@ -89,7 +89,7 @@ impl Default for Node {
 }
 
 /// Sup Config
-#[derive(Default, Deserialize, Serialize)]
+#[derive(Default, Deserialize, Serialize, Debug)]
 pub struct Config {
     /// Node Metadata
     pub metadata: MetaData,
