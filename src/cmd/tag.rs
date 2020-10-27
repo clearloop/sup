@@ -11,6 +11,10 @@ pub fn exec(limit: usize, update: bool) -> Result<()> {
 
     // Get tags
     let mut tags = registry.tag()?;
+    if tags.len() == 0 {
+        registry.update()?;
+    }
+
     let last = if limit < tags.len() || limit < 1 {
         limit
     } else {
