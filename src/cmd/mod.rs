@@ -54,11 +54,19 @@ enum Opt {
         #[structopt(short, long)]
         update: bool,
     },
-    /// Show the current config
+    /// Show or edit the current config
     Config {
-        /// If edit the config
+        /// Edit the config
         #[structopt(short, long)]
         edit: bool,
+        /// Set registry
+        #[structopt(
+            short,
+            long,
+            default_value = "https://github.com/paritytech/substrate.git",
+            name = "git-url"
+        )]
+        registry: String,
     },
 }
 
@@ -67,7 +75,7 @@ pub fn exec() -> Result<()> {
     let opt = Opt::from_args();
     match opt {
         Opt::New { path, skip } => new::exec(path, skip)?,
-        Opt::Config { edit } => config::exec(edit)?,
+        Opt::Config { edit, registry } => config::exec(edit, registry)?,
         Opt::Tag { limit, update } => tag::exec(limit, update)?,
         Opt::Update => update::exec()?,
         Opt::Upgrade { tag, path, update } => upgrade::exec(path, tag, update)?,
