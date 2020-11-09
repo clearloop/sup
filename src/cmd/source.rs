@@ -10,10 +10,17 @@ fn cap(mut name: String) -> String {
 }
 
 /// Exec command `source`
-pub fn exec(query: String, version: bool) -> Result<()> {
+pub fn exec(query: String, tag: String, version: bool) -> Result<()> {
     let registry = Registry::new()?;
+    let mut should_checkout = false;
     let mut source = registry.source()?;
     source.sort_by(|(np, _), (nq, _)| np.partial_cmp(nq).unwrap_or(Ordering::Greater));
+
+    // tags
+    if !tag.is_empty() {
+        should_checkout = true;
+        registry.checkout(&tag)?;
+    }
 
     println!(
         "{}",
@@ -43,5 +50,10 @@ pub fn exec(query: String, version: bool) -> Result<()> {
         }
         .join("\n")
     );
+
+    // Checkout back to the latest commit
+    if should_checkout {
+        registry.checkout("master")?;
+    }
     Ok(())
 }

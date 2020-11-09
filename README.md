@@ -26,7 +26,7 @@ cargo install sup
 ## Usage
 
 ```bash
-sup 0.2.0
+sup 0.2.4
 
 USAGE:
     sup <SUBCOMMAND>
@@ -36,6 +36,7 @@ FLAGS:
     -V, --version    Prints version information
 
 SUBCOMMANDS:
+    config     Show or edit the current config
     help       Prints this message or the help of the given subcommand(s)
     new        Create a new substrate node template
     source     List Source
