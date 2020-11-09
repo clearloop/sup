@@ -38,6 +38,9 @@ enum Opt {
         /// Show dependencies contain <query>
         #[structopt(short, long, default_value = "")]
         query: String,
+        /// Registry tag
+        #[structopt(short, long, default_value = "")]
+        tag: String,
         /// If show versions
         #[structopt(short, long)]
         version: bool,
@@ -79,7 +82,11 @@ pub fn exec() -> Result<()> {
         Opt::Tag { limit, update } => tag::exec(limit, update)?,
         Opt::Update => update::exec()?,
         Opt::Upgrade { tag, path, update } => upgrade::exec(path, tag, update)?,
-        Opt::Source { query, version } => source::exec(query, version)?,
+        Opt::Source {
+            query,
+            tag,
+            version,
+        } => source::exec(query, tag, version)?,
     }
 
     Ok(())
