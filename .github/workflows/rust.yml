@@ -31,8 +31,6 @@ jobs:
           if [[ $(uname -s) == 'Darwin' ]];then
               export LDFLAGS="-L/usr/local/opt/openssl@1.1/lib"
               export CPPFLAGS="-I/usr/local/opt/openssl@1.1/include"
-          else
-              # DO NO THING
           fi
           ./target/release/sup new target/supnode
           cd target/supnode
