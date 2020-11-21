@@ -30,7 +30,7 @@ jobs:
         run: |
           if [[ $(uname -s) == 'Darwin' ]];then
               brew update
-              brew install openssl cmake
+              brew install -f openssl cmake
           else 
               sudo apt update
               sudo apt install -y cmake pkg-config libssl-dev git build-essential clang libclang-dev curl
