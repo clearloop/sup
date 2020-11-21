@@ -33,7 +33,7 @@ enum Opt {
     },
     /// Update registry
     Update,
-    /// List Source
+    /// List source crates
     Source {
         /// Show dependencies contain <query>
         #[structopt(short, long, default_value = "")]
@@ -45,7 +45,7 @@ enum Opt {
         #[structopt(short, long)]
         version: bool,
     },
-    /// Switch registry tag for target substrate project
+    /// Switch registry tag for the target substrate project
     Switch {
         /// Project path
         #[structopt(short, long, default_value = ".")]

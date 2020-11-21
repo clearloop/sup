@@ -28,7 +28,7 @@ jobs:
         run: cargo test -vv --release
       - name: Build template
         run: |
-          if [[ $(uname -s) =='Darwin' ]];then
+          if [[ $(uname -s) == 'Darwin' ]];then
               brew update
               brew install openssl cmake
           else 
