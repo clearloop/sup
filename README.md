@@ -26,7 +26,7 @@ cargo install sup
 ## Usage
 
 ```bash
-sup 0.2.4
+sup 0.2.5
 
 USAGE:
     sup <SUBCOMMAND>
@@ -36,13 +36,13 @@ FLAGS:
     -V, --version    Prints version information
 
 SUBCOMMANDS:
-    config     Show or edit the current config
-    help       Prints this message or the help of the given subcommand(s)
-    new        Create a new substrate node template
-    source     List Source
-    tag        List available tags
-    update     Update registry
-    upgrade    Upgrade substrate project
+    config    Show or edit the current config
+    help      Prints this message or the help of the given subcommand(s)
+    new       Create a new substrate node template
+    source    List source crates
+    switch    Switch registry tag for the target substrate project
+    tag       List available tags
+    update    Update registry
 ```
 
 ## Linked Projects

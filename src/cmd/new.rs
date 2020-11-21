@@ -42,15 +42,12 @@ pub fn exec(target: PathBuf, skip: bool) -> Result<()> {
             .args(vec!["install", "nightly"])
             .status()?;
         Command::new("rustup")
-            .args(vec!["override", "set", "nightly-2020-10-05"])
-            .status()?;
-        Command::new("rustup")
             .args(vec![
                 "target",
                 "add",
                 "wasm32-unknown-unknown",
                 "--toolchain",
-                "nightly-2020-10-05",
+                "nightly",
             ])
             .status()?;
     }

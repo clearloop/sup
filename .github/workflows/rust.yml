@@ -8,10 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [macOS-latest, ubuntu-latest]
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout the source code
         uses: actions/checkout@v1
@@ -34,6 +31,6 @@ jobs:
       - name: Upgrade template
         run: |
           ./target/release/sup update
-          ./target/release/sup upgrade -t v2.0.0-rc1
+          ./target/release/sup switch
           cargo build -vv --release
           

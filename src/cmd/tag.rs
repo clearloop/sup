@@ -11,7 +11,7 @@ pub fn exec(limit: usize, update: bool) -> Result<()> {
 
     // Get tags
     let mut tags = registry.tag()?;
-    if tags.len() == 0 {
+    if tags.is_empty() {
         registry.update()?;
     }
 
