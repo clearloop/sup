@@ -9,14 +9,14 @@ use std::path::PathBuf;
 /// Exec command `upgrade`
 pub fn exec(path: PathBuf, mut tag: String, update: bool) -> Result<()> {
     let registry = Registry::new()?;
-    if update {
+    let mut tags = registry.tag()?;
+    if update || tags.is_empty() {
         println!("Fetching registry...");
         registry.update()?;
+        tags = registry.tag()?;
     }
 
-    // tags
-    let tags = registry.tag()?;
-    if tag.is_empty() && !tags.is_empty() {
+    if tag.is_empty() {
         tag = tags[tags.len() - 1].clone();
     } else if !tags.contains(&tag) {
         return Err(Error::Sup(format!(
