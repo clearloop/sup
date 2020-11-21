@@ -1,6 +1,6 @@
 use crate::{result::Result, Config};
 use etc::{Etc, Read};
-use std::process::Command;
+use std::process::{Command, Stdio};
 
 mod manifest;
 mod redep;
@@ -64,9 +64,52 @@ impl Registry {
     pub fn checkout(&self, patt: &str) -> Result<()> {
         Command::new("git")
             .args(vec!["-C", &self.dir, "checkout", patt])
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
             .status()?;
 
         Ok(())
+    }
+
+    /// Get current tag
+    pub fn cur_tag(&self) -> Result<String> {
+        let tag = String::from_utf8_lossy(
+            &Command::new("git")
+                .args(vec!["-C", &self.dir, "tag", "--points-at", "HEAD"])
+                .output()?
+                .stdout,
+        )
+        .trim()
+        .to_string();
+
+        Ok(if tag.contains('\n') {
+            let tags = tag.split("\n").collect::<Vec<_>>();
+            tags[0].to_string()
+        } else {
+            tag
+        })
+    }
+
+    /// Get the latest tag
+    pub fn latest_tag(&self) -> Result<String> {
+        // git describe --tags $(git rev-list --tags --max-count=1)
+        let hashes = String::from_utf8_lossy(
+            &Command::new("git")
+                .args(vec!["-C", &self.dir, "rev-list", "--tags", "--max-count=1"])
+                .output()?
+                .stdout,
+        )
+        .trim()
+        .to_string();
+
+        Ok(String::from_utf8_lossy(
+            &Command::new("git")
+                .args(vec!["-C", &self.dir, "describe", "--tags", &hashes])
+                .output()?
+                .stdout,
+        )
+        .trim()
+        .to_string())
     }
 
     /// List substrate tags

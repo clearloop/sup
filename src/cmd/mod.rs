@@ -45,7 +45,7 @@ enum Opt {
         #[structopt(short, long)]
         version: bool,
     },
-    /// Switch tags for target substrate project
+    /// Switch registry tag for target substrate project
     Switch {
         /// Project path
         #[structopt(short, long, default_value = ".")]
