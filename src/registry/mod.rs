@@ -83,7 +83,7 @@ impl Registry {
         .to_string();
 
         Ok(if tag.contains('\n') {
-            let tags = tag.split("\n").collect::<Vec<_>>();
+            let tags = tag.split('\n').collect::<Vec<_>>();
             tags[0].to_string()
         } else {
             tag

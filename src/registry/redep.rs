@@ -17,7 +17,7 @@ fn attr(mut src: String, attr: &str, dst: &str, end: Option<&str>) -> String {
     let end_patt = if let Some(patt) = end { patt } else { "\"" };
     if src.contains(attr) {
         let begin = src.as_str().find(attr).unwrap_or(0);
-        let first_single_qoute = begin + src.as_str()[begin..].find("'").unwrap_or(0) + 1;
+        let first_single_qoute = begin + src.as_str()[begin..].find('\'').unwrap_or(0) + 1;
         let first_double_qoute = begin + src.as_str()[begin..].find('"').unwrap_or(0) + 1;
         let first_qoute =
             if first_single_qoute < first_double_qoute && first_single_qoute > begin + 1 {
@@ -38,7 +38,7 @@ fn add_attr(mut src: String, attr: &str, value: &str) -> String {
     let mut dep = false;
     let begin = src.as_str().find('{').unwrap_or_else(|| {
         dep = true;
-        src.as_str().find("]").unwrap_or(0) + 1
+        src.as_str().find(']').unwrap_or(0) + 1
     });
 
     // Check if add failed
@@ -67,7 +67,7 @@ fn remove_attr(mut src: String, attr: &str) -> String {
         return src;
     }
 
-    let end = &src[begin..].find("\"").unwrap_or(0);
+    let end = &src[begin..].find('\"').unwrap_or(0);
     if &src[begin..begin + 1] == "{" {
         src.replace_range(begin..*end, "");
     } else {

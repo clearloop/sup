@@ -28,7 +28,7 @@ pub struct MetaData {
 
 impl MetaData {
     /// Generate the metadata tuples
-    pub fn tuple<'m>(&self) -> Vec<(&str, String, Option<&str>)> {
+    pub fn tuple(&self) -> Vec<(&str, String, Option<&str>)> {
         vec![
             (
                 "authors =",
