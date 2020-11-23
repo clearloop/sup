@@ -67,18 +67,14 @@ fn remove_attr(mut src: String, attr: &str) -> String {
         return src;
     }
 
-    let mut end = &src[begin..].find('\"').unwrap_or(0) + begin + 1;
+    let mut end = begin;
+    end += &src[begin..].find('\"').unwrap_or(0) + 1;
     end += &src[end..].find('\"').unwrap_or(0) + 1;
     end += &src[end..]
         .find(|c: char| !c.is_whitespace() && c != ',')
         .unwrap_or(0);
 
-    if &src[begin..begin + 1] == "{" {
-        src.replace_range(begin..end, "");
-    } else {
-        src.replace_range(begin..end, "");
-    }
-
+    src.replace_range(begin..end, "");
     src
 }
 
