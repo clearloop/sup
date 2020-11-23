@@ -41,7 +41,10 @@ pub fn rustup() -> Result<()> {
 
     if !info.contains("wasm32-unknown-unknown") && !info.contains("nightly-2020-11-20") {
         Command::new("rustup")
-            .args(vec!["default", "nightly-11-20"])
+            .args(vec!["install", "nightly"])
+            .status()?;
+        Command::new("rustup")
+            .args(vec!["override", "set", "nightly-2020-11-20"])
             .status()?;
         Command::new("rustup")
             .args(vec![
