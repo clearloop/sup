@@ -27,10 +27,10 @@ jobs:
         run: |
           ./target/release/sup new target/supnode
           cd target/supnode
-          cargo build -vv --release
+          cargo build -vv
       - name: Upgrade template
         run: |
           ./target/release/sup update
           ./target/release/sup switch -t v2.0.0-rc6
-          cargo build -vv --release
+          cargo build -vv
           

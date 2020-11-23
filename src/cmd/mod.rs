@@ -15,7 +15,7 @@ pub mod update;
 enum Opt {
     /// Create a new substrate node template
     New {
-        /// Package path
+        /// Project path
         #[structopt(name = "PATH")]
         path: PathBuf,
         /// If skip toolchain check

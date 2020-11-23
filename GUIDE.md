@@ -139,8 +139,8 @@ substrate registry offers.
 
 ```
 $ sup source -h
-sup-source 0.2.0
-List Source
+sup-source 0.2.6
+List source crates
 
 USAGE:
     sup source [OPTIONS]
@@ -151,6 +151,7 @@ FLAGS:
 
 OPTIONS:
     -q, --query <query>    Show dependencies contain <query> [default: ]
+    -t, --tag <tag>        Registry tag [default: ]
 
 $ sup source -q frame
 frame-benchmarking                                 - 2.0.0
