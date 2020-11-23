@@ -21,6 +21,9 @@ enum Opt {
         /// If skip toolchain check
         #[structopt(short, long)]
         skip: bool,
+        /// Specify a tag to generate
+        #[structopt(short, long, default_value = "")]
+        tag: String,
     },
     /// List available tags
     Tag {
@@ -77,7 +80,7 @@ enum Opt {
 pub fn exec() -> Result<()> {
     let opt = Opt::from_args();
     match opt {
-        Opt::New { path, skip } => new::exec(path, skip)?,
+        Opt::New { path, skip, tag } => new::exec(path, skip, tag)?,
         Opt::Config { edit, registry } => config::exec(edit, registry)?,
         Opt::Tag { limit, update } => tag::exec(limit, update)?,
         Opt::Update => update::exec()?,

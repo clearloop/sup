@@ -84,7 +84,7 @@ impl Registry {
 
         Ok(if tag.contains('\n') {
             let tags = tag.split('\n').collect::<Vec<_>>();
-            tags[0].to_string()
+            tags[tags.len() - 1].to_string()
         } else {
             tag
         })
@@ -114,9 +114,9 @@ impl Registry {
 
     /// List substrate tags
     pub fn tag(&self) -> Result<Vec<String>> {
-        Ok(String::from_utf8_lossy(
+        let mut tags = String::from_utf8_lossy(
             &Command::new("git")
-                .args(vec!["-C", &self.dir, "tag", "--list"])
+                .args(vec!["-C", &self.dir, "tag", "--sort=-creatordate"])
                 .output()?
                 .stdout,
         )
@@ -124,8 +124,11 @@ impl Registry {
         .split('\n')
         .collect::<Vec<&str>>()
         .iter()
-        .filter(|t| t.starts_with('v'))
+        .filter(|t| t.starts_with('v') || t.starts_with('p'))
         .map(|t| t.to_string())
-        .collect())
+        .collect::<Vec<_>>();
+        tags.reverse();
+
+        Ok(tags)
     }
 }
