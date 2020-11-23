@@ -40,6 +40,7 @@ pub fn exec(target: PathBuf, skip: bool, mut tag: String) -> Result<()> {
 
     // Check wasm
     if !skip {
+        registry.update()?;
         Command::new("rustup")
             .args(vec!["install", "nightly"])
             .status()?;
@@ -56,7 +57,6 @@ pub fn exec(target: PathBuf, skip: bool, mut tag: String) -> Result<()> {
 
     // Fetch registry
     let registry = Registry::new()?;
-    registry.update()?;
     if !has_tag || !registry.tag()?.contains(&tag) {
         tag = registry.latest_tag()?;
     }
