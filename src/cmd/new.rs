@@ -52,7 +52,7 @@ pub fn rustup() -> Result<()> {
                 "add",
                 "wasm32-unknown-unknown",
                 "--toolchain",
-                "nightly",
+                "nightly-2020-11-20",
             ])
             .status()?;
     }
