@@ -34,13 +34,12 @@ pub fn workspace(target: &PathBuf, registry: &Registry) -> Result<Manifest> {
     Ok(mani)
 }
 
-/// Exec command `new`
-pub fn exec(target: PathBuf, skip: bool, mut tag: String) -> Result<()> {
-    let has_tag = !tag.is_empty();
+/// Check if need update rustup
+pub fn rustup() -> Result<()> {
+    let info = String::from_utf8_lossy(&Command::new("rustup").args(vec!["show"]).output()?.stdout)
+        .to_string();
 
-    // Check wasm
-    if !skip {
-        registry.update()?;
+    if !info.contains("wasm32-unknown-unknown") && !info.contains("nightly") {
         Command::new("rustup")
             .args(vec!["install", "nightly"])
             .status()?;
@@ -55,9 +54,24 @@ pub fn exec(target: PathBuf, skip: bool, mut tag: String) -> Result<()> {
             .status()?;
     }
 
+    Ok(())
+}
+
+/// Exec command `new`
+pub fn exec(target: PathBuf, mut tag: String) -> Result<()> {
+    let has_tag = !tag.is_empty();
+
     // Fetch registry
     let registry = Registry::new()?;
-    if !has_tag || !registry.tag()?.contains(&tag) {
+    rustup()?;
+
+    // Checkout tag
+    let tags = registry.tag()?;
+    if tags.is_empty() {
+        registry.update()?;
+    }
+
+    if !has_tag || !tags.contains(&tag) {
         tag = registry.latest_tag()?;
     }
 
