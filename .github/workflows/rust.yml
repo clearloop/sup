@@ -31,6 +31,4 @@ jobs:
       - name: Upgrade template
         run: |
           ./target/release/sup update
-          ./target/release/sup switch -t v2.0.0
-          cargo build -vv
-          
+          ./target/release/sup switch -t v2.0.0-rc6

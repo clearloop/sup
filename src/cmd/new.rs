@@ -39,9 +39,9 @@ pub fn rustup() -> Result<()> {
     let info = String::from_utf8_lossy(&Command::new("rustup").args(vec!["show"]).output()?.stdout)
         .to_string();
 
-    if !info.contains("wasm32-unknown-unknown") && !info.contains("nightly") {
+    if !info.contains("wasm32-unknown-unknown") && !info.contains("nightly-2020-11-20") {
         Command::new("rustup")
-            .args(vec!["install", "nightly"])
+            .args(vec!["default", "nightly-11-20"])
             .status()?;
         Command::new("rustup")
             .args(vec![
