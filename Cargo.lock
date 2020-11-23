@@ -289,7 +289,7 @@ dependencies = [
 
 [[package]]
 name = "sup"
-version = "0.2.5"
+version = "0.2.6"
 dependencies = [
  "dirs",
  "etc",

@@ -9,7 +9,7 @@ named sup in your terminal, just like this:
 
 ```text
 $ sup
-sup 0.2.0
+sup 0.2.6
 
 USAGE:
     sup <SUBCOMMAND>
@@ -19,33 +19,37 @@ FLAGS:
     -V, --version    Prints version information
 
 SUBCOMMANDS:
-    help       Prints this message or the help of the given subcommand(s)
-    new        Create a new substrate node template
-    source     List Source
-    tag        List available tags
-    update     Update registry
-    upgrade    Upgrade substrate project
+    config    Show or edit the current config
+    help      Prints this message or the help of the given subcommand(s)
+    new       Create a new substrate node template
+    source    List source crates
+    switch    Switch registry tag for the target substrate project
+    tag       List available tags
+    update    Update registry
 ```
 
 If everything works fine, let's create a `node-template` using sup:
 
 ```
 $ sup new -h
-sup-new 0.2.0
+sup-new 0.2.6
 Create a new substrate node template
 
 USAGE:
-    sup new [FLAGS] <PATH>
+    sup new [FLAGS] [OPTIONS] <PATH>
 
 FLAGS:
     -h, --help       Prints help information
     -s, --skip       If skip toolchain check
     -V, --version    Prints version information
 
+OPTIONS:
+    -t, --tag <tag>    Specify a tag to generate [default: ]
+
 ARGS:
-    <PATH>    Package path
+    <PATH>    Project path
     
-$ sup create cydonia
+$ sup new cydonia
 Created node-template "cydonia" succeed!
 
 $ tree cydonia
@@ -87,44 +91,13 @@ cydonia
 Deal, our substrate node-template has been created!
 
 
-## Upgrade the substrate dependencies
-
-Now we're going to upgrade our substrate-based chain! Follow up~
-
-```
-$ sup upgrade -h
-sup-upgrade 0.2.0
-Upgrade substrate project
-
-USAGE:
-    sup upgrade [FLAGS] [OPTIONS]
-
-FLAGS:
-    -h, --help       Prints help information
-    -u, --update     If update registry
-    -V, --version    Prints version information
-
-OPTIONS:
-    -p, --path <path>    Project path [default: .]
-    -t, --tag <tag>      Registry tag [default: ]
-
-# Run this command under your substrate-based node
-$ sup upgrade
-Upgrade "cydonia" succeed!
-```
-
-Well, the substrate depencidencies of our substrate-based chain has been updated
-following the lastest tag of our substrate registry!
-
-
 ## Downupgrade the substrate dependencies
 
-So what if we want to downgrade our substrate dependencies? Let's check what substrate
-tags our registry has~
+Now we're going to switch a tag for our substrate project.
 
 ```
  $ sup tag -h
-sup-tag 0.2.0
+sup-tag 0.2.6
 List available tags
 
 USAGE:
@@ -139,25 +112,24 @@ OPTIONS:
     -l, --limit <limit>    The limit count of tags [default: 10]
     
 $ sup tag
+polkadot-0-8-25-dep
+v2.0.0
 v2.0.0-rc6
 v2.0.0-rc5+2
 v2.0.0-rc5+1
 v2.0.0-rc5
 v2.0.0-rc4
 v2.0.0-rc3
-v2.0.0-rc2+2
 v2.0.0-rc2
-v2.0.0-rc1
-v2.0.0-alpha.8
-```
-WOW, we can have tags from `v2.0.0-alpha.8` to `v2.0.0-rc6`, let's do it.
+v2.0.0-rc2+2
 
-```
 $ sup upgrade -t v2.0.0-rc1
 Upgrade "cydonia" succeed!
 ```
-This works, even it's unbeleivable, we can use `upgrade` command to downgrade our substrate
-dependencies as well, don't forget the `-t` trick~
+
+It works, we can use `switch` command to upgrade or downgrade our substrate
+dependencies, don't forget the `-t` tag.
+
 
 ## Select a new substrate dependency
 
@@ -197,5 +169,3 @@ substrate-frame-cli                                - 2.0.0
 substrate-frame-rpc-support                        - 2.0.0
 substrate-frame-rpc-system                         - 2.0.0
 ```
-
-It works!
