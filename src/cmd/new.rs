@@ -56,13 +56,11 @@ pub fn exec(target: PathBuf, skip: bool, mut tag: String) -> Result<()> {
 
     // Fetch registry
     let registry = Registry::new()?;
-    if has_tag {
-        let tags = registry.tag()?;
-        if !tags.contains(&tag) {
-            tag = registry.latest_tag()?;
-        }
-        registry.checkout(&tag)?;
+    if !has_tag || !registry.tag()?.contains(&tag) {
+        tag = registry.latest_tag()?;
     }
+
+    registry.checkout(&tag)?;
     let substrate = Etc::from(&registry.dir);
     let template = substrate.find("node-template")?;
     etc::cp_r(template, PathBuf::from(&target))?;
