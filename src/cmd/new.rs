@@ -58,12 +58,14 @@ pub fn rustup() -> Result<()> {
 }
 
 /// Exec command `new`
-pub fn exec(target: PathBuf, mut tag: String) -> Result<()> {
+pub fn exec(target: PathBuf, skip: bool, mut tag: String) -> Result<()> {
     let has_tag = !tag.is_empty();
 
     // Fetch registry
     let registry = Registry::new()?;
-    rustup()?;
+    if !skip {
+        rustup()?;
+    }
 
     // Checkout tag
     let tags = registry.tag()?;
