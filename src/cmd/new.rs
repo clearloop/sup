@@ -72,5 +72,7 @@ pub fn exec(target: PathBuf, skip: bool, mut tag: String) -> Result<()> {
     Etc::from(&target).open("Cargo.toml")?.write(dst)?;
     println!("Created node-template {:?} succeed!", &target);
 
+    // Checkout back to the latest commit
+    registry.checkout("master")?;
     Ok(())
 }
