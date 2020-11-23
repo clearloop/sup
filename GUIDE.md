@@ -40,7 +40,6 @@ USAGE:
 
 FLAGS:
     -h, --help       Prints help information
-    -s, --skip       If skip toolchain check
     -V, --version    Prints version information
 
 OPTIONS:
