@@ -9,7 +9,7 @@ const TAG_ATTR_PATT: &str = "tag = \"";
 const INLINE_DEP_ANCHOR: &str = " = ";
 const INLINE_DEP_END_PATT: &str = "\n";
 const BLOCK_DEP_ANCHOR: [&str; 2] = [".", "]"];
-const BLOCK_DEP_END_PATT: &str = "\n\n\n";
+const BLOCK_DEP_END_PATT: &str = "\n\n";
 const PACKAGE_DEP_ANCHOR: &str = "package = \"";
 
 /// Override attr with new pattern
@@ -53,7 +53,7 @@ fn add_attr(mut src: String, attr: &str, value: &str) -> String {
             if dep { "" } else { " " },
             attr,
             value,
-            if dep { "\n " } else { "," }
+            if dep { "\n" } else { "," }
         ),
     );
 
