@@ -39,12 +39,12 @@ pub fn rustup() -> Result<()> {
     let info = String::from_utf8_lossy(&Command::new("rustup").args(vec!["show"]).output()?.stdout)
         .to_string();
 
-    if !info.contains("wasm32-unknown-unknown") && !info.contains("nightly-2020-11-20") {
+    if !info.contains("wasm32-unknown-unknown") && !info.contains("nightly-2020-10-05") {
         Command::new("rustup")
             .args(vec!["install", "nightly"])
             .status()?;
         Command::new("rustup")
-            .args(vec!["override", "set", "nightly-2020-11-20"])
+            .args(vec!["override", "set", "nightly-2020-10-05"])
             .status()?;
         Command::new("rustup")
             .args(vec![
@@ -52,7 +52,7 @@ pub fn rustup() -> Result<()> {
                 "add",
                 "wasm32-unknown-unknown",
                 "--toolchain",
-                "nightly-2020-11-20",
+                "nightly-2020-10-05",
             ])
             .status()?;
     }
