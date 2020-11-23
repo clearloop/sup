@@ -22,7 +22,7 @@ enum Opt {
         #[structopt(short, long)]
         skip: bool,
         /// Specify a tag to generate
-        #[structopt(short, long, default_value = "")]
+        #[structopt(short, long, default_value = "v2.0.0")]
         tag: String,
     },
     /// List available tags
