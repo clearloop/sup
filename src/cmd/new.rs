@@ -34,12 +34,17 @@ pub fn workspace(target: &PathBuf, registry: &Registry) -> Result<Manifest> {
     Ok(mani)
 }
 
-/// Exec command `new`
-pub fn exec(target: PathBuf, skip: bool) -> Result<()> {
-    // Check wasm
-    if !skip {
+/// Check if need update rustup
+pub fn rustup() -> Result<()> {
+    let info = String::from_utf8_lossy(&Command::new("rustup").args(vec!["show"]).output()?.stdout)
+        .to_string();
+
+    if !info.contains("wasm32-unknown-unknown") && !info.contains("nightly-2020-10-05") {
         Command::new("rustup")
             .args(vec!["install", "nightly"])
+            .status()?;
+        Command::new("rustup")
+            .args(vec!["override", "set", "nightly-2020-10-05"])
             .status()?;
         Command::new("rustup")
             .args(vec![
@@ -47,13 +52,35 @@ pub fn exec(target: PathBuf, skip: bool) -> Result<()> {
                 "add",
                 "wasm32-unknown-unknown",
                 "--toolchain",
-                "nightly",
+                "nightly-2020-10-05",
             ])
             .status()?;
     }
 
+    Ok(())
+}
+
+/// Exec command `new`
+pub fn exec(target: PathBuf, skip: bool, mut tag: String) -> Result<()> {
+    let has_tag = !tag.is_empty();
+
     // Fetch registry
     let registry = Registry::new()?;
+    if !skip {
+        rustup()?;
+    }
+
+    // Checkout tag
+    let tags = registry.tag()?;
+    if tags.is_empty() {
+        registry.update()?;
+    }
+
+    if !has_tag || !tags.contains(&tag) {
+        tag = registry.latest_tag()?;
+    }
+
+    registry.checkout(&tag)?;
     let substrate = Etc::from(&registry.dir);
     let template = substrate.find("node-template")?;
     etc::cp_r(template, PathBuf::from(&target))?;
@@ -65,5 +92,7 @@ pub fn exec(target: PathBuf, skip: bool) -> Result<()> {
     Etc::from(&target).open("Cargo.toml")?.write(dst)?;
     println!("Created node-template {:?} succeed!", &target);
 
+    // Checkout back to the latest commit
+    registry.checkout("master")?;
     Ok(())
 }

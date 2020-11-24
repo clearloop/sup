@@ -9,7 +9,7 @@ const TAG_ATTR_PATT: &str = "tag = \"";
 const INLINE_DEP_ANCHOR: &str = " = ";
 const INLINE_DEP_END_PATT: &str = "\n";
 const BLOCK_DEP_ANCHOR: [&str; 2] = [".", "]"];
-const BLOCK_DEP_END_PATT: &str = "\n\n\n";
+const BLOCK_DEP_END_PATT: &str = "\n\n";
 const PACKAGE_DEP_ANCHOR: &str = "package = \"";
 
 /// Override attr with new pattern
@@ -53,7 +53,7 @@ fn add_attr(mut src: String, attr: &str, value: &str) -> String {
             if dep { "" } else { " " },
             attr,
             value,
-            if dep { "\n " } else { "," }
+            if dep { "\n" } else { "," }
         ),
     );
 
@@ -67,13 +67,14 @@ fn remove_attr(mut src: String, attr: &str) -> String {
         return src;
     }
 
-    let end = &src[begin..].find('\"').unwrap_or(0);
-    if &src[begin..begin + 1] == "{" {
-        src.replace_range(begin..*end, "");
-    } else {
-        src.replace_range(begin..end + 1, "");
-    }
+    let mut end = begin;
+    end += &src[begin..].find('\"').unwrap_or(0) + 1;
+    end += &src[end..].find('\"').unwrap_or(0) + 1;
+    end += &src[end..]
+        .find(|c: char| !c.is_whitespace() && c != ',')
+        .unwrap_or(0);
 
+    src.replace_range(begin..end, "");
     src
 }
 

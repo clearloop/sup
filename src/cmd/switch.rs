@@ -2,12 +2,12 @@
 
 use crate::{
     registry::{redep, Registry},
-    result::{Error, Result},
+    result::Result,
 };
 use std::path::PathBuf;
 
 /// Exec command `switch`
-pub fn exec(path: PathBuf, mut tag: String, update: bool) -> Result<()> {
+pub fn exec(path: PathBuf, tag: String, update: bool) -> Result<()> {
     let registry = Registry::new()?;
     let mut tags = registry.tag()?;
     if update || tags.is_empty() {
@@ -16,22 +16,26 @@ pub fn exec(path: PathBuf, mut tag: String, update: bool) -> Result<()> {
         tags = registry.tag()?;
     }
 
-    if tag.is_empty() {
-        tag = registry.latest_tag()?;
-    } else if !tags.contains(&tag) {
-        return Err(Error::Sup(format!(
-            "The registry at {} doesn't have tag {}",
-            registry.dir, tag,
-        )));
+    if !tag.is_empty() && tags.contains(&tag) {
+        // Checkout to the target tag
+        registry.checkout(&tag)?;
+        println!(
+            "Switching to tag {} for {}",
+            &tag,
+            &path.to_str().unwrap_or(".")
+        );
+    } else if tag.is_empty() {
+        println!(
+            "Use the latest registry without tags for {}",
+            path.to_str().unwrap_or(".")
+        );
+    } else {
+        println!(
+            "Doesn't have tag {} in registry, retry with `--update` flag",
+            &tag
+        );
+        return Ok(());
     }
-
-    // Checkout to the target tag
-    registry.checkout(&tag)?;
-    println!(
-        "Switching to tag {} for {}",
-        &tag,
-        &path.to_str().unwrap_or(".")
-    );
 
     // Operate tags
     let crates = etc::find_all(path, "Cargo.toml")?;
