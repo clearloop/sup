@@ -1,4 +1,4 @@
-//! Comamnd Upgrade
+//! Comamnd Update
 
 use crate::{
     registry::{redep, Registry},
@@ -7,10 +7,10 @@ use crate::{
 use std::path::PathBuf;
 
 /// Exec command `switch`
-pub fn exec(path: PathBuf, tag: String, update: bool) -> Result<()> {
+pub fn exec(path: PathBuf, tag: String) -> Result<()> {
     let registry = Registry::new()?;
     let mut tags = registry.tag()?;
-    if update || tags.is_empty() {
+    if tags.is_empty() {
         println!("Fetching registry...");
         registry.update()?;
         tags = registry.tag()?;

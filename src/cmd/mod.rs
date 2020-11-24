@@ -6,8 +6,8 @@ use structopt::{clap::AppSettings, StructOpt};
 pub mod config;
 pub mod new;
 pub mod source;
-pub mod switch;
 pub mod tag;
+pub mod update;
 
 #[derive(StructOpt, Debug)]
 #[structopt(setting = AppSettings::InferSubcommands)]
@@ -46,17 +46,14 @@ enum Opt {
         #[structopt(short, long)]
         version: bool,
     },
-    /// Switch registry tag for the target substrate project
-    Switch {
+    /// Update the target substrate project
+    Update {
         /// Project path
         #[structopt(short, long, default_value = ".")]
         project: PathBuf,
         /// Registry tag
         #[structopt(short, long, default_value = "")]
         tag: String,
-        /// If update registry
-        #[structopt(short, long)]
-        update: bool,
     },
     /// Show or edit the current config
     Config {
@@ -81,11 +78,7 @@ pub fn exec() -> Result<()> {
         Opt::New { path, skip, tag } => new::exec(path, skip, tag)?,
         Opt::Config { edit, registry } => config::exec(edit, registry)?,
         Opt::Tag { limit, update } => tag::exec(limit, update)?,
-        Opt::Switch {
-            project,
-            tag,
-            update,
-        } => switch::exec(project, tag, update)?,
+        Opt::Update { project, tag } => update::exec(project, tag)?,
         Opt::Source {
             query,
             tag,
