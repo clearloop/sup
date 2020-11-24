@@ -24,7 +24,7 @@ pub fn exec(edit: bool, git: String) -> Result<()> {
     }
 
     // If with registry flag, reset the registry
-    if !git.is_empty() && git.ne(&registry.config.node.registry) {
+    if !git.is_empty() && edit {
         if !git.ends_with(".git") {
             return Err(Error::Sup(format!("Wrong git url: {}", git)));
         }
