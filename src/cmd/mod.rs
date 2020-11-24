@@ -8,7 +8,6 @@ pub mod new;
 pub mod source;
 pub mod switch;
 pub mod tag;
-pub mod update;
 
 #[derive(StructOpt, Debug)]
 #[structopt(setting = AppSettings::InferSubcommands)]
@@ -34,8 +33,7 @@ enum Opt {
         #[structopt(short, long)]
         update: bool,
     },
-    /// Update registry
-    Update,
+
     /// List source crates
     Source {
         /// Show dependencies contain <query>
@@ -83,7 +81,6 @@ pub fn exec() -> Result<()> {
         Opt::New { path, skip, tag } => new::exec(path, skip, tag)?,
         Opt::Config { edit, registry } => config::exec(edit, registry)?,
         Opt::Tag { limit, update } => tag::exec(limit, update)?,
-        Opt::Update => update::exec()?,
         Opt::Switch {
             project,
             tag,
