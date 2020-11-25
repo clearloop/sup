@@ -1,7 +1,7 @@
 //! Sup Commands
 use crate::result::Result;
 use std::path::PathBuf;
-use structopt::{clap::AppSettings, StructOpt};
+use structopt::StructOpt;
 
 pub mod config;
 pub mod new;
@@ -10,8 +10,7 @@ pub mod tag;
 pub mod update;
 
 #[derive(StructOpt, Debug)]
-#[structopt(setting = AppSettings::InferSubcommands)]
-enum Opt {
+enum Command {
     /// Create a new substrate node template
     New {
         /// Project path
@@ -55,31 +54,31 @@ enum Opt {
         #[structopt(short, long, default_value = "")]
         tag: String,
     },
-    /// Show or edit the current config
+    /// Shows or edits the current config
     Config {
-        /// Edit the config
-        #[structopt(short, long)]
-        edit: bool,
-        /// Set registry
-        #[structopt(
-            short,
-            long,
-            default_value = "https://github.com/paritytech/substrate.git",
-            name = "git-url"
-        )]
-        registry: String,
+        #[structopt(subcommand)]
+        config: config::Config,
     },
+}
+
+#[derive(StructOpt, Debug)]
+struct Opt {
+    /// Updates the global registry
+    #[structopt(short, long)]
+    update: bool,
+    #[structopt(subcommand)]
+    command: Command,
 }
 
 /// Exec commands
 pub fn exec() -> Result<()> {
     let opt = Opt::from_args();
-    match opt {
-        Opt::New { path, skip, tag } => new::exec(path, skip, tag)?,
-        Opt::Config { edit, registry } => config::exec(edit, registry)?,
-        Opt::Tag { limit, update } => tag::exec(limit, update)?,
-        Opt::Update { project, tag } => update::exec(project, tag)?,
-        Opt::Source {
+    match opt.command {
+        Command::New { path, skip, tag } => new::exec(path, skip, tag)?,
+        Command::Config { config } => config::exec(config)?,
+        Command::Tag { limit, update } => tag::exec(limit, update)?,
+        Command::Update { project, tag } => update::exec(project, tag)?,
+        Command::Source {
             query,
             tag,
             version,
