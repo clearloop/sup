@@ -6,12 +6,20 @@ use structopt::StructOpt;
 pub mod config;
 pub mod list;
 pub mod new;
-pub mod source;
-pub mod tag;
 pub mod update;
 
 #[derive(StructOpt, Debug)]
 enum Command {
+    /// Shows or edits the current config
+    Config {
+        #[structopt(subcommand)]
+        config: config::Config,
+    },
+    /// List registry source or tags
+    List {
+        #[structopt(subcommand)]
+        list: list::List,
+    },
     /// Create a new substrate node template
     New {
         /// Project path
@@ -24,28 +32,6 @@ enum Command {
         #[structopt(short, long, default_value = "v2.0.0")]
         tag: String,
     },
-    /// List available tags
-    Tag {
-        /// The limit count of tags
-        #[structopt(short, long, default_value = "10")]
-        limit: usize,
-        /// If update registry
-        #[structopt(short, long)]
-        update: bool,
-    },
-
-    /// List source crates
-    Source {
-        /// Show dependencies contain <query>
-        #[structopt(short, long, default_value = "")]
-        query: String,
-        /// Registry tag
-        #[structopt(short, long, default_value = "")]
-        tag: String,
-        /// If show versions
-        #[structopt(short, long)]
-        version: bool,
-    },
     /// Update the target substrate project
     Update {
         /// Project path
@@ -54,11 +40,6 @@ enum Command {
         /// Registry tag
         #[structopt(short, long, default_value = "")]
         tag: String,
-    },
-    /// Shows or edits the current config
-    Config {
-        #[structopt(subcommand)]
-        config: config::Config,
     },
 }
 
@@ -83,15 +64,10 @@ pub fn exec() -> Result<()> {
 
     // Match subcommands
     match opt.command {
-        Command::New { path, skip, tag } => new::exec(registry, path, skip, tag)?,
         Command::Config { config } => config::exec(registry, config)?,
-        Command::Tag { limit, update } => tag::exec(registry, limit, update)?,
+        Command::List { list } => list::exec(registry, list)?,
+        Command::New { path, skip, tag } => new::exec(registry, path, skip, tag)?,
         Command::Update { project, tag } => update::exec(registry, project, tag)?,
-        Command::Source {
-            query,
-            tag,
-            version,
-        } => source::exec(registry, query, tag, version)?,
     }
 
     Ok(())
