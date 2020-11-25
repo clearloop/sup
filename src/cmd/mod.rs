@@ -1,9 +1,10 @@
 //! Sup Commands
-use crate::result::Result;
+use crate::{registry::Registry, result::Result};
 use std::path::PathBuf;
 use structopt::StructOpt;
 
 pub mod config;
+pub mod list;
 pub mod new;
 pub mod source;
 pub mod tag;
@@ -73,16 +74,24 @@ struct Opt {
 /// Exec commands
 pub fn exec() -> Result<()> {
     let opt = Opt::from_args();
+
+    // Check if update
+    let registry = Registry::new()?;
+    if opt.update {
+        registry.update()?;
+    }
+
+    // Match subcommands
     match opt.command {
-        Command::New { path, skip, tag } => new::exec(path, skip, tag)?,
-        Command::Config { config } => config::exec(config)?,
-        Command::Tag { limit, update } => tag::exec(limit, update)?,
-        Command::Update { project, tag } => update::exec(project, tag)?,
+        Command::New { path, skip, tag } => new::exec(registry, path, skip, tag)?,
+        Command::Config { config } => config::exec(registry, config)?,
+        Command::Tag { limit, update } => tag::exec(registry, limit, update)?,
+        Command::Update { project, tag } => update::exec(registry, project, tag)?,
         Command::Source {
             query,
             tag,
             version,
-        } => source::exec(query, tag, version)?,
+        } => source::exec(registry, query, tag, version)?,
     }
 
     Ok(())

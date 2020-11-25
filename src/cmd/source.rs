@@ -10,8 +10,7 @@ fn cap(mut name: String) -> String {
 }
 
 /// Exec command `source`
-pub fn exec(query: String, tag: String, version: bool) -> Result<()> {
-    let registry = Registry::new()?;
+pub fn exec(registry: Registry, query: String, tag: String, version: bool) -> Result<()> {
     let mut should_checkout = false;
     let mut source = registry.source()?;
     source.sort_by(|(np, _), (nq, _)| np.partial_cmp(nq).unwrap_or(Ordering::Greater));

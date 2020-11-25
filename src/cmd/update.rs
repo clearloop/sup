@@ -7,8 +7,7 @@ use crate::{
 use std::path::PathBuf;
 
 /// Exec command `switch`
-pub fn exec(path: PathBuf, tag: String) -> Result<()> {
-    let registry = Registry::new()?;
+pub fn exec(registry: Registry, path: PathBuf, tag: String) -> Result<()> {
     let mut tags = registry.tag()?;
     if tags.is_empty() {
         println!("Fetching registry...");

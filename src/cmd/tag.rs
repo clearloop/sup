@@ -2,8 +2,7 @@
 use crate::{registry::Registry, result::Result};
 
 /// Exec comamnd `tag`
-pub fn exec(limit: usize, update: bool) -> Result<()> {
-    let registry = Registry::new()?;
+pub fn exec(registry: Registry, limit: usize, update: bool) -> Result<()> {
     if update {
         println!("Fetching registry...");
         registry.update()?;

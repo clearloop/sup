@@ -23,8 +23,7 @@ pub enum Config {
 }
 
 /// Exec `config` command
-pub fn exec(config: Config) -> Result<()> {
-    let mut r = Registry::new()?;
+pub fn exec(r: Registry, config: Config) -> Result<()> {
     let cur_registry = PathBuf::from(&r.dir);
     let home = cur_registry
         .parent()
@@ -50,7 +49,8 @@ pub fn exec(config: Config) -> Result<()> {
             if !registry.ends_with(".git") {
                 return Err(Error::Sup(format!("Wrong git url: {}", registry)));
             }
-            r.config.node.registry = registry;
+            let mut config = r.config.clone();
+            config.node.registry = registry;
 
             Etc::from(&home)
                 .open("config.toml")?
