@@ -9,8 +9,8 @@
 
 Sup is a package manager of [substrate][substrate] which uses the github as registry.
 
-With `sup`, you can `create` you substrate node just in one command, `upgrade` or `downgrade`
-your substrate dependencies in one command as well.
+With `sup`, you can `new` you substrate node just in one command, and `update` your substrate
+dependencies by tags in one command as well.
 
 For the official tutorial of creating [substrate][substrate] node without sup, please check
 out [Create Your First Substrate Chain][create-your-first-substrate-chain]. For the example
