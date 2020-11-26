@@ -20,7 +20,11 @@ impl Registry {
     pub fn new() -> Result<Registry> {
         let config = Config::new()?;
         let mut substrate = dirs::home_dir().expect("Could not find home directory");
-        substrate.push(format!(".sup/{}", config.node.name()));
+        substrate.push(format!(
+            ".sup/{}/{}",
+            config.node.name_space(),
+            config.node.name()
+        ));
 
         let registry = substrate.to_string_lossy().to_owned();
         if !substrate.exists() {

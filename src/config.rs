@@ -16,7 +16,7 @@ fn get(src: &str, key: &str) -> String {
 }
 
 /// MetaData Config
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct MetaData {
     /// Node authors
     pub authors: Vec<String>,
@@ -60,13 +60,21 @@ impl Default for MetaData {
 }
 
 /// Node Config
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Node {
     /// Node Registry
     pub registry: String,
 }
 
 impl Node {
+    /// The name space of the registry node
+    pub fn name_space(&self) -> String {
+        let name = self.name();
+        let end = self.registry.find(&name).unwrap_or(0);
+        let begin = (&self.registry[..end - 1]).rfind('/').unwrap_or(0) + 1;
+        self.registry[begin..end].to_string()
+    }
+
     /// Get the name of registry
     pub fn name(&self) -> String {
         let begin = self.registry.rfind('/').unwrap_or(0) + 1;
@@ -89,7 +97,7 @@ impl Default for Node {
 }
 
 /// Sup Config
-#[derive(Default, Deserialize, Serialize, Debug)]
+#[derive(Default, Deserialize, Serialize, Debug, Clone)]
 pub struct Config {
     /// Node Metadata
     pub metadata: MetaData,

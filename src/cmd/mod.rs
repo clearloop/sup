@@ -1,18 +1,25 @@
 //! Sup Commands
-use crate::result::Result;
+use crate::{registry::Registry, result::Result};
 use std::path::PathBuf;
-use structopt::{clap::AppSettings, StructOpt};
+use structopt::StructOpt;
 
 pub mod config;
+pub mod list;
 pub mod new;
-pub mod source;
-pub mod switch;
-pub mod tag;
 pub mod update;
 
 #[derive(StructOpt, Debug)]
-#[structopt(setting = AppSettings::InferSubcommands)]
-enum Opt {
+enum Command {
+    /// Shows or edits the current config
+    Config {
+        #[structopt(subcommand)]
+        config: config::Config,
+    },
+    /// List registry source or tags
+    List {
+        #[structopt(subcommand)]
+        list: list::List,
+    },
     /// Create a new substrate node template
     New {
         /// Project path
@@ -25,75 +32,42 @@ enum Opt {
         #[structopt(short, long, default_value = "v2.0.0")]
         tag: String,
     },
-    /// List available tags
-    Tag {
-        /// The limit count of tags
-        #[structopt(short, long, default_value = "10")]
-        limit: usize,
-        /// If update registry
-        #[structopt(short, long)]
-        update: bool,
-    },
-    /// Update registry
-    Update,
-    /// List source crates
-    Source {
-        /// Show dependencies contain <query>
-        #[structopt(short, long, default_value = "")]
-        query: String,
-        /// Registry tag
-        #[structopt(short, long, default_value = "")]
-        tag: String,
-        /// If show versions
-        #[structopt(short, long)]
-        version: bool,
-    },
-    /// Switch registry tag for the target substrate project
-    Switch {
+    /// Update the target substrate project
+    Update {
         /// Project path
         #[structopt(short, long, default_value = ".")]
         project: PathBuf,
         /// Registry tag
-        #[structopt(short, long, default_value = "")]
-        tag: String,
-        /// If update registry
         #[structopt(short, long)]
-        update: bool,
+        tag: Option<String>,
     },
-    /// Show or edit the current config
-    Config {
-        /// Edit the config
-        #[structopt(short, long)]
-        edit: bool,
-        /// Set registry
-        #[structopt(
-            short,
-            long,
-            default_value = "https://github.com/paritytech/substrate.git",
-            name = "git-url"
-        )]
-        registry: String,
-    },
+}
+
+#[derive(StructOpt, Debug)]
+struct Opt {
+    /// Pulls and updates the global registry
+    #[structopt(short, long)]
+    pull: bool,
+    #[structopt(subcommand)]
+    command: Command,
 }
 
 /// Exec commands
 pub fn exec() -> Result<()> {
     let opt = Opt::from_args();
-    match opt {
-        Opt::New { path, skip, tag } => new::exec(path, skip, tag)?,
-        Opt::Config { edit, registry } => config::exec(edit, registry)?,
-        Opt::Tag { limit, update } => tag::exec(limit, update)?,
-        Opt::Update => update::exec()?,
-        Opt::Switch {
-            project,
-            tag,
-            update,
-        } => switch::exec(project, tag, update)?,
-        Opt::Source {
-            query,
-            tag,
-            version,
-        } => source::exec(query, tag, version)?,
+
+    // Check if update
+    let registry = Registry::new()?;
+    if opt.pull {
+        registry.update()?;
+    }
+
+    // Match subcommands
+    match opt.command {
+        Command::Config { config } => config::exec(registry, config)?,
+        Command::List { list } => list::exec(registry, list)?,
+        Command::New { path, skip, tag } => new::exec(registry, path, skip, tag)?,
+        Command::Update { project, tag } => update::exec(registry, project, tag)?,
     }
 
     Ok(())

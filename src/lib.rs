@@ -9,8 +9,8 @@
 //!
 //! Sup is a package manager of [substrate][substrate] which uses the github as registry.
 //!
-//! With `sup`, you can `create` you substrate node just in one command, `upgrade` or `downgrade`
-//! your substrate dependencies in one command as well.
+//! With `sup`, you can `new` you substrate node just in one command, `update` your substrate
+//! dependencies by tags in one command as well.
 //!
 //! For the official tutorial of creating [substrate][substrate] node without sup, please check
 //! out [Create Your First Substrate Chain][create-your-first-substrate-chain]. For the example
@@ -26,23 +26,22 @@
 //! ## Usage
 //!
 //! ```bash
-//! sup 0.2.5
+//! sup 0.2.7
 //!
-//! USAGE:
-//!     sup <SUBCOMMAND>
+//!     USAGE:
+//! sup [FLAGS] <SUBCOMMAND>
 //!
-//! FLAGS:
-//!     -h, --help       Prints help information
+//!     FLAGS:
+//! -h, --help       Prints help information
+//!     -u, --update     Updates the global registry
 //!     -V, --version    Prints version information
 //!
-//! SUBCOMMANDS:
-//!     config    Show or edit the current config
+//!     SUBCOMMANDS:
+//! config    Shows or edits the current config
 //!     help      Prints this message or the help of the given subcommand(s)
+//!     list      List registry source or tags
 //!     new       Create a new substrate node template
-//!     source    List source crates
-//!     switch    Switch registry tag for the target substrate project
-//!     tag       List available tags
-//!     update    Update registry
+//!     update    Update the target substrate project
 //! ```
 //!
 //! ## Linked Projects
