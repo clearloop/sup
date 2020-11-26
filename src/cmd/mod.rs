@@ -45,9 +45,9 @@ enum Command {
 
 #[derive(StructOpt, Debug)]
 struct Opt {
-    /// Updates the global registry
+    /// Pulls and updates the global registry
     #[structopt(short, long)]
-    update: bool,
+    pull: bool,
     #[structopt(subcommand)]
     command: Command,
 }
@@ -58,7 +58,7 @@ pub fn exec() -> Result<()> {
 
     // Check if update
     let registry = Registry::new()?;
-    if opt.update {
+    if opt.pull {
         registry.update()?;
     }
 
