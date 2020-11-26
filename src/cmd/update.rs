@@ -7,7 +7,7 @@ use crate::{
 use std::path::PathBuf;
 
 /// Exec command `switch`
-pub fn exec(registry: Registry, path: PathBuf, tag: String) -> Result<()> {
+pub fn exec(registry: Registry, path: PathBuf, tag: Option<String>) -> Result<()> {
     let mut tags = registry.tag()?;
     if tags.is_empty() {
         println!("Fetching registry...");
@@ -15,25 +15,27 @@ pub fn exec(registry: Registry, path: PathBuf, tag: String) -> Result<()> {
         tags = registry.tag()?;
     }
 
-    if !tag.is_empty() && tags.contains(&tag) {
-        // Checkout to the target tag
-        registry.checkout(&tag)?;
-        println!(
-            "Switching to tag {} for {}",
-            &tag,
-            &path.to_str().unwrap_or(".")
-        );
-    } else if tag.is_empty() {
+    if let Some(tag) = tag {
+        if !tags.contains(&tag) {
+            println!(
+                "Doesn't have tag {} in registry, retry with `--update` flag",
+                &tag
+            );
+            return Ok(());
+        } else {
+            // Checkout to the target tag
+            registry.checkout(&tag)?;
+            println!(
+                "Switching to tag {} for {}",
+                &tag,
+                &path.to_str().unwrap_or(".")
+            );
+        }
+    } else {
         println!(
             "Use the latest registry without tags for {}",
             path.to_str().unwrap_or(".")
         );
-    } else {
-        println!(
-            "Doesn't have tag {} in registry, retry with `--update` flag",
-            &tag
-        );
-        return Ok(());
     }
 
     // Operate tags

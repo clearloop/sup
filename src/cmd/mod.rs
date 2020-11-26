@@ -38,8 +38,8 @@ enum Command {
         #[structopt(short, long, default_value = ".")]
         project: PathBuf,
         /// Registry tag
-        #[structopt(short, long, default_value = "")]
-        tag: String,
+        #[structopt(short, long)]
+        tag: Option<String>,
     },
 }
 
