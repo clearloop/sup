@@ -2,10 +2,10 @@
 
 Here we'll show the usage of Sup in detail.
 
-+ Command [config](./customize-your-cargo-metadata)
-+ Command [new](./create-a-new-node-template)
-+ Command [list](./list-substrate-dependencies-by-tag)
-+ Command [update](./update-substrate-dependencies)
++ Command [config](#customize-your-cargo-metadata)
++ Command [new](#create-a-node-template)
++ Command [list](#list-substrate-dependencies-by-tag)
++ Command [update](#update-substrate-dependencies)
 
 ## Create a node-template
 
