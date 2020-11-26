@@ -1,6 +1,11 @@
 # Guide of Sup
 
-Here we'll show the usage of Sup in detail~
+Here we'll show the usage of Sup in detail.
+
++ Command [config](#customize-your-cargo-metadata)
++ Command [new](#create-a-node-template)
++ Command [list](#list-substrate-dependencies-by-tag)
++ Command [update](#update-substrate-dependencies)
 
 ## Create a node-template
 
@@ -9,30 +14,29 @@ named sup in your terminal, just like this:
 
 ```text
 $ sup
-sup 0.2.6
+sup 0.2.7
 
 USAGE:
-    sup <SUBCOMMAND>
+    sup [FLAGS] <SUBCOMMAND>
 
 FLAGS:
     -h, --help       Prints help information
+    -p, --pull       Updates the global registry
     -V, --version    Prints version information
 
 SUBCOMMANDS:
-    config    Show or edit the current config
+    config    Shows or edits the current config
     help      Prints this message or the help of the given subcommand(s)
+    list      List registry source or tags
     new       Create a new substrate node template
-    source    List source crates
-    switch    Switch registry tag for the target substrate project
-    tag       List available tags
-    update    Update registry
+    update    Update the target substrate project
 ```
 
 If everything works fine, let's create a `node-template` using sup:
 
 ```
 $ sup new -h
-sup-new 0.2.6
+sup-new 0.2.7
 Create a new substrate node template
 
 USAGE:
@@ -40,10 +44,11 @@ USAGE:
 
 FLAGS:
     -h, --help       Prints help information
+    -s, --skip       Skip rust toolchain check
     -V, --version    Prints version information
 
 OPTIONS:
-    -t, --tag <tag>    Specify a tag to generate [default: ]
+    -t, --tag <tag>    Specify a tag to generate [default: v2.0.0]
 
 ARGS:
     <PATH>    Project path
@@ -90,69 +95,69 @@ cydonia
 Deal, our substrate node-template has been created!
 
 
-## Downupgrade the substrate dependencies
+## Customize your cargo metadata
 
-Now we're going to switch a tag for our substrate project.
+The config file of sup is located at `~/.sup/config.toml`, by default, it's like:
+
+```toml
+[metadata]
+authors = ["clearloop <udtrokia@gmail.com>"]
+version = "0.1.0"
+license = "MIT"
+
+[node]
+registry = "https://github.com/paritytech/substrate.git"
 
 ```
- $ sup tag -h
-sup-tag 0.2.6
-List available tags
+
+You can modify the registry by the shortcut `sup config set -r`,
+
+```
+sup-config 0.2.7
+Shows or edits the current config
 
 USAGE:
-    sup tag [FLAGS] [OPTIONS]
+    sup config <SUBCOMMAND>
 
 FLAGS:
     -h, --help       Prints help information
-    -u, --update     If update registry
     -V, --version    Prints version information
 
-OPTIONS:
-    -l, --limit <limit>    The limit count of tags [default: 10]
-    
-$ sup tag
-polkadot-0-8-25-dep
-v2.0.0
-v2.0.0-rc6
-v2.0.0-rc5+2
-v2.0.0-rc5+1
-v2.0.0-rc5
-v2.0.0-rc4
-v2.0.0-rc3
-v2.0.0-rc2
-v2.0.0-rc2+2
-
-$ sup upgrade -t v2.0.0-rc1
-Upgrade "cydonia" succeed!
+SUBCOMMANDS:
+    edit    Edits the current config
+    help    Prints this message or the help of the given subcommand(s)
+    list    Lists the current config
+    set     Sets config field
 ```
 
-It works, we can use `switch` command to upgrade or downgrade our substrate
-dependencies, don't forget the `-t` tag.
+All info in metadata will invoke or replace into the node-template sup generates, 
+And the `registry` determines where the context of our node-template comes from.
 
 
-## Select a new substrate dependency
+## list substrate dependencies by tag
 
 Sometimes, we need to take a quick look at what dependencies the official substrate registry
 offers, can `sup` help reach this? For example, now we want to find our how many `frame` the
 substrate registry offers.
 
 ```
-$ sup source -h
-sup-source 0.2.6
-List source crates
+$ sup list
+sup-list 0.2.7
+List registry source or tags
 
 USAGE:
-    sup source [OPTIONS]
+    sup list <SUBCOMMAND>
 
 FLAGS:
     -h, --help       Prints help information
-    -v, --version    If show versions
+    -V, --version    Prints version information
 
-OPTIONS:
-    -q, --query <query>    Show dependencies contain <query> [default: ]
-    -t, --tag <tag>        Registry tag [default: ]
+SUBCOMMANDS:
+    help      Prints this message or the help of the given subcommand(s)
+    source    List source crates of registry
+    tag       List tags of registry
 
-$ sup source -q frame
+$ sup list source | grep frame
 frame-benchmarking                                 - 2.0.0
 frame-benchmarking-cli                             - 2.0.0
 frame-executive                                    - 2.0.0
@@ -169,3 +174,43 @@ substrate-frame-cli                                - 2.0.0
 substrate-frame-rpc-support                        - 2.0.0
 substrate-frame-rpc-system                         - 2.0.0
 ```
+
+## Update substrate dependencies
+
+Now we're going to switch a tag for our substrate project.
+
+```
+$ sup list tag
+polkadot-0-8-25-dep
+v2.0.0
+v2.0.0-rc6
+v2.0.0-rc5+2
+v2.0.0-rc5+1
+v2.0.0-rc5
+v2.0.0-rc4
+v2.0.0-rc3
+v2.0.0-rc2
+v2.0.0-rc2+2
+
+$ sup update -h
+ 𝝺 ./target/debug/sup update -h
+sup-update 0.2.7
+Update the target substrate project
+
+USAGE:
+    sup update [OPTIONS]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -p, --project <project>    Project path [default: .]
+    -t, --tag <tag>            Registry tag [default: ]
+
+$ sup update -t v2.0.0-rc1
+Upgrade "cydonia" succeed!
+```
+
+It works, we can use `switch` command to upgrade or downgrade our substrate
+dependencies, don't forget the `-t` tag.
