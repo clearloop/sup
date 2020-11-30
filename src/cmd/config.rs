@@ -27,6 +27,8 @@ pub fn exec(r: Registry, config: Config) -> Result<()> {
     let cur_registry = PathBuf::from(&r.dir);
     let home = cur_registry
         .parent()
+        .expect("Could not find home dir of sup")
+        .parent()
         .expect("Could not find home dir of sup");
 
     match config {
@@ -52,9 +54,10 @@ pub fn exec(r: Registry, config: Config) -> Result<()> {
             let mut config = r.config.clone();
             config.node.registry = registry;
 
+            println!("{:?}", &config);
             Etc::from(&home)
                 .open("config.toml")?
-                .write(toml::to_string(&r.config)?)?;
+                .write(toml::to_string(&config)?)?;
 
             return Ok(());
         }

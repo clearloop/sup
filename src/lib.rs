@@ -26,7 +26,7 @@
 //! ## Usage
 //!
 //! ```bash
-//! sup 0.2.7
+//! sup 0.2.8
 //!
 //!     USAGE:
 //! sup [FLAGS] <SUBCOMMAND>

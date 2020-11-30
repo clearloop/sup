@@ -72,7 +72,7 @@ impl Node {
         let name = self.name();
         let end = self.registry.find(&name).unwrap_or(0);
         let begin = (&self.registry[..end - 1]).rfind('/').unwrap_or(0) + 1;
-        self.registry[begin..end].to_string()
+        self.registry[begin..end - 1].to_string()
     }
 
     /// Get the name of registry
