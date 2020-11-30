@@ -51,10 +51,8 @@ pub fn exec(r: Registry, config: Config) -> Result<()> {
             if !registry.ends_with(".git") {
                 return Err(Error::Sup(format!("Wrong git url: {}", registry)));
             }
-            let mut config = r.config.clone();
+            let mut config = r.config;
             config.node.registry = registry;
-
-            println!("{:?}", &config);
             Etc::from(&home)
                 .open("config.toml")?
                 .write(toml::to_string(&config)?)?;
