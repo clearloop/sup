@@ -4,6 +4,7 @@ use etc::{Etc, Read, Write};
 use std::path::PathBuf;
 
 const PATH_ATTR_PATT: &str = "path = \"";
+const GIT_ATTR_PATT: &str = "git = \"";
 const VERSION_ATTR_PATT: &str = "version = \"";
 const TAG_ATTR_PATT: &str = "tag = \"";
 const INLINE_DEP_ANCHOR: &str = " = ";
@@ -134,6 +135,14 @@ pub fn redirect(mani: &PathBuf, registry: &Registry) -> Result<()> {
         patt = attr(
             patt,
             PATH_ATTR_PATT,
+            &format!("git = \"{}\"", registry.config.node.registry),
+            None,
+        );
+
+        // Replace `git` to new `git`
+        patt = attr(
+            patt,
+            GIT_ATTR_PATT,
             &format!("git = \"{}\"", registry.config.node.registry),
             None,
         );
