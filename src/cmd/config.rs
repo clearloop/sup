@@ -3,7 +3,7 @@ use crate::{
     registry::Registry,
     result::{Error, Result},
 };
-use etc::{Etc, FileSystem, Write};
+use etc::{Etc, Meta};
 use std::{path::PathBuf, process::Command};
 use structopt::StructOpt;
 
@@ -23,42 +23,40 @@ pub enum Config {
 }
 
 /// Exec `config` command
-pub fn exec(r: Registry, config: Config) -> Result<()> {
+pub fn exec(mut r: Registry, config: Config) -> Result<()> {
     let cur_registry = PathBuf::from(&r.dir);
-    let home = cur_registry
-        .parent()
-        .expect("Could not find home dir of sup")
-        .parent()
-        .expect("Could not find home dir of sup");
+    let home = Etc::from(
+        cur_registry
+            .parent()
+            .expect("Could not find home dir of sup")
+            .parent()
+            .expect("Could not find home dir of sup"),
+    );
 
     match config {
         Config::List => {
             println!("{:#?}", &r.config);
+            return Ok(());
         }
         Config::Edit => {
             Command::new("vi")
-                .arg(
-                    home.parent()
-                        .expect("Could not find home dir of sup")
-                        .join("config.toml")
-                        .to_string_lossy()
-                        .to_string(),
-                )
+                .arg(if let Some(ref path) = r.config.dir {
+                    Etc::from(path).name()?
+                } else {
+                    home.name()?
+                })
                 .status()?;
-            return Ok(());
         }
         Config::Set { registry } => {
             if !registry.ends_with(".git") {
                 return Err(Error::Sup(format!("Wrong git url: {}", registry)));
             }
-            let mut config = r.config;
-            config.node.registry = registry;
-            Etc::from(&home)
-                .open("config.toml")?
-                .write(toml::to_string(&config)?)?;
 
-            return Ok(());
+            r.config.node.registry = registry;
+            r.config.flush()?;
         }
     }
+
+    println!("ok!");
     Ok(())
 }

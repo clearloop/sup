@@ -121,9 +121,9 @@ dependencies = [
 
 [[package]]
 name = "etc"
-version = "0.1.11"
+version = "0.1.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f7b9682af9c2214e9041a408b1c53fdfd1e4e4503b66b868422f006d3df52354"
+checksum = "4f7935cc590ee512e8073c4fe82b85e056216324e65aed24459204e3f6d9f72e"
 
 [[package]]
 name = "getrandom"
@@ -289,7 +289,7 @@ dependencies = [
 
 [[package]]
 name = "sup"
-version = "0.2.8"
+version = "0.2.9"
 dependencies = [
  "dirs",
  "etc",

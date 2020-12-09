@@ -1,13 +1,13 @@
 //! Comamnd Update
-
 use crate::{
     registry::{redep, Registry},
     result::Result,
 };
+use etc::{Etc, FileSystem};
 use std::path::PathBuf;
 
 /// Exec command `switch`
-pub fn exec(registry: Registry, path: PathBuf, tag: Option<String>) -> Result<()> {
+pub fn exec(mut registry: Registry, path: PathBuf, tag: Option<String>) -> Result<()> {
     let mut tags = registry.tag()?;
     if tags.is_empty() {
         println!("Fetching registry...");
@@ -15,10 +15,10 @@ pub fn exec(registry: Registry, path: PathBuf, tag: Option<String>) -> Result<()
         tags = registry.tag()?;
     }
 
-    if let Some(tag) = tag {
+    if let Some(ref tag) = tag {
         if !tags.contains(&tag) {
             println!(
-                "Doesn't have tag {} in registry, retry with `--update` flag",
+                "Doesn't have tag {} in registry, please retry with `--update` flag",
                 &tag
             );
             return Ok(());
@@ -31,20 +31,49 @@ pub fn exec(registry: Registry, path: PathBuf, tag: Option<String>) -> Result<()
                 &path.to_str().unwrap_or(".")
             );
         }
+
+        registry.config.node.tag(tag);
     } else {
-        println!(
-            "Use the latest registry without tags for {}",
-            path.to_str().unwrap_or(".")
-        );
+        if Etc::from(&registry.dir).find("node-template").is_err() {
+            println!(
+                "Registry {} with tag {:?} doesn't have node-template, \
+                 please retry with `--update` flag",
+                &registry.config.node.registry, &tag,
+            );
+            println!("failed.");
+            return Ok(());
+        }
+
+        // If has tag field in current `.sup.toml`
+        if let Some(ref tag) = registry.config.node.tag {
+            // Checkout to the target tag
+            if registry.checkout(&tag).is_err() {
+                println!(
+                    "Doesn't have tag {} in registry, please retry with `--update` flag",
+                    &tag
+                );
+                println!("failed.");
+                return Ok(());
+            }
+
+            println!("Update {} with tag {}", path.to_str().unwrap_or("."), &tag);
+        } else {
+            println!(
+                "Use the latest registry without tag for {}",
+                path.to_str().unwrap_or(".")
+            );
+        }
     }
 
     // Operate tags
-    let crates = etc::find_all(path, "Cargo.toml")?;
-    for ct in crates {
-        redep(&ct, &registry)?;
-    }
+    etc::find_all(&path, "Cargo.toml")?
+        .iter()
+        .map(|ct| redep(&ct, &registry))
+        .collect::<Result<Vec<_>>>()?;
 
     // Checkout back to the latest commit
     registry.checkout("master")?;
+    registry.config.gen(path)?;
+    println!("ok!");
     Ok(())
 }

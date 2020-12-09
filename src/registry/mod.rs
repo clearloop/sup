@@ -1,6 +1,9 @@
-use crate::{result::Result, Config};
+use crate::{
+    result::{Error, Result},
+    Config,
+};
 use etc::{Etc, Read};
-use std::process::{Command, Stdio};
+use std::process::Command;
 
 mod manifest;
 mod redep;
@@ -66,11 +69,16 @@ impl Registry {
 
     /// Checkout to target tag
     pub fn checkout(&self, patt: &str) -> Result<()> {
-        Command::new("git")
-            .args(vec!["-C", &self.dir, "checkout", patt])
-            .stdout(Stdio::null())
-            .stderr(Stdio::null())
-            .status()?;
+        if String::from_utf8_lossy(
+            &Command::new("git")
+                .args(vec!["-C", &self.dir, "checkout", patt])
+                .output()?
+                .stderr,
+        )
+        .contains("error")
+        {
+            return Err(Error::Sup(format!("Checkout to tag {} failed", patt)));
+        }
 
         Ok(())
     }

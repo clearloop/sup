@@ -61,7 +61,7 @@ pub fn rustup() -> Result<()> {
 }
 
 /// Exec command `new`
-pub fn exec(registry: Registry, target: PathBuf, skip: bool, mut tag: String) -> Result<()> {
+pub fn exec(mut registry: Registry, target: PathBuf, skip: bool, mut tag: String) -> Result<()> {
     if !skip {
         rustup()?;
     }
@@ -93,9 +93,16 @@ pub fn exec(registry: Registry, target: PathBuf, skip: bool, mut tag: String) ->
             "The registry {} at tag {} doesn't have node-template",
             &registry.config.node.registry, &tag
         );
+        println!("failed.");
+        return Ok(());
     }
 
     // Checkout back to the latest commit
     registry.checkout("master")?;
+    if has_tag {
+        registry.config.node.tag(&tag);
+    }
+    registry.config.gen(target)?;
+    println!("ok!");
     Ok(())
 }

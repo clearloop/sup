@@ -2,7 +2,7 @@
 use crate::Result;
 use etc::{Etc, FileSystem, Meta, Read, Write};
 use serde::{Deserialize, Serialize};
-use std::process::Command;
+use std::{path::PathBuf, process::Command};
 
 /// Get value from equation
 fn get(src: &str, key: &str) -> String {
@@ -64,6 +64,8 @@ impl Default for MetaData {
 pub struct Node {
     /// Node Registry
     pub registry: String,
+    /// Target tag
+    pub tag: Option<String>,
 }
 
 impl Node {
@@ -86,12 +88,18 @@ impl Node {
         }
         .to_string()
     }
+
+    /// Set tag
+    pub fn tag(&mut self, tag: &str) {
+        self.tag = Some(tag.to_string());
+    }
 }
 
 impl Default for Node {
     fn default() -> Node {
         Node {
             registry: "https://github.com/paritytech/substrate.git".to_string(),
+            tag: None,
         }
     }
 }
@@ -103,6 +111,9 @@ pub struct Config {
     pub metadata: MetaData,
     /// Node Config
     pub node: Node,
+    /// If the config is not from global path
+    #[serde(skip)]
+    pub dir: Option<PathBuf>,
 }
 
 impl Config {
@@ -113,13 +124,34 @@ impl Config {
         Ok(default)
     }
 
+    /// Get config from global path
+    pub fn path(mut self, path: PathBuf) -> Config {
+        self.dir = Some(path);
+        self
+    }
+
+    /// Generate config to current directory
+    pub fn gen<E>(&self, etc: E) -> Result<()>
+    where
+        E: Into<Etc>,
+    {
+        Into::<Etc>::into(etc)
+            .open(".sup.toml")?
+            .write(toml::to_string(&self)?)?;
+        Ok(())
+    }
+
     /// New config
     pub fn new() -> Result<Config> {
-        let mut home = dirs::home_dir().expect("Could not find home dir");
-        home.push(".sup");
+        if let Ok(sup) = etc::find_up(".sup.toml") {
+            let bytes = Etc::from(&sup).read()?;
+            return Ok(toml::from_slice::<Config>(&bytes)?.path(sup));
+        }
 
-        let etc = Etc::from(&home);
-        let config = etc.open("config.toml")?;
+        let mut home = dirs::home_dir().expect("Could not find home dir");
+        home.push(".sup/config.toml");
+
+        let config = Etc::from(home);
         if config.real_path()?.exists() {
             let bytes = config.read()?;
             if let Ok(cur) = toml::from_slice::<Config>(&bytes) {
@@ -130,5 +162,18 @@ impl Config {
         } else {
             Self::gen_default(&config)
         }
+    }
+
+    /// Update the config in disk
+    pub fn flush(&self) -> Result<()> {
+        if let Some(ref path) = self.dir {
+            Etc::from(path).write(toml::to_string(&self)?)?;
+        } else {
+            let mut home = dirs::home_dir().expect("Could not find home dir");
+            home.push(".sup/config.toml");
+            Etc::from(home).write(toml::to_string(&self)?)?;
+        }
+
+        Ok(())
     }
 }

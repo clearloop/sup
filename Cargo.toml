@@ -1,6 +1,6 @@
 [package]
 name = "sup"
-version = "0.2.8"
+version = "0.2.9"
 authors = ["clearloop <udtrokia@gmail.com>"]
 edition = "2018"
 description = "Substrate package manager"
@@ -26,7 +26,7 @@ path = "src/bin/sup.rs"
 # deps
 [dependencies]
 dirs = "3.0.1"
-etc = "0.1.11"
+etc = "0.1.16"
 structopt = "0.3.14"
 toml = "0.5.6"
 
