@@ -15,7 +15,7 @@ pub fn exec(registry: Registry, path: PathBuf, tag: Option<String>) -> Result<()
         tags = registry.tag()?;
     }
 
-    if let Some(tag) = tag {
+    if let Some(ref tag) = tag {
         if !tags.contains(&tag) {
             println!(
                 "Doesn't have tag {} in registry, retry with `--update` flag",
@@ -39,10 +39,10 @@ pub fn exec(registry: Registry, path: PathBuf, tag: Option<String>) -> Result<()
     }
 
     // Operate tags
-    let crates = etc::find_all(path, "Cargo.toml")?;
-    for ct in crates {
-        redep(&ct, &registry)?;
-    }
+    etc::find_all(path, "Cargo.toml")?
+        .iter()
+        .map(|ct| redep(&ct, &registry))
+        .collect::<Result<Vec<_>>>()?;
 
     // Checkout back to the latest commit
     registry.checkout("master")?;

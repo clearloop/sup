@@ -1,6 +1,6 @@
 //! Sup config
 use crate::Result;
-use etc::{Etc, FileSystem, Meta, Read, Write};
+use etc::{Etc, Meta, Read, Write};
 use serde::{Deserialize, Serialize};
 use std::process::Command;
 
@@ -64,6 +64,8 @@ impl Default for MetaData {
 pub struct Node {
     /// Node Registry
     pub registry: String,
+    /// Target tag
+    pub tag: Option<String>,
 }
 
 impl Node {
@@ -92,6 +94,7 @@ impl Default for Node {
     fn default() -> Node {
         Node {
             registry: "https://github.com/paritytech/substrate.git".to_string(),
+            tag: None,
         }
     }
 }
@@ -103,32 +106,45 @@ pub struct Config {
     pub metadata: MetaData,
     /// Node Config
     pub node: Node,
+    /// If the config is from global path
+    #[serde(skip)]
+    pub global: bool,
 }
 
 impl Config {
     /// Inject default config to path
-    pub fn gen_default(config: &Etc) -> Result<Config> {
+    pub fn gen_default(config: &Etc, global: bool) -> Result<Config> {
         let default = Config::default();
         config.write(toml::to_string(&default)?)?;
-        Ok(default)
+        Ok(default.global(global))
+    }
+
+    /// Get config from global path
+    pub fn global(mut self, global: bool) -> Config {
+        self.global = global;
+        self
     }
 
     /// New config
     pub fn new() -> Result<Config> {
-        let mut home = dirs::home_dir().expect("Could not find home dir");
-        home.push(".sup");
+        if let Ok(sup) = etc::find_up("sup.toml") {
+            let bytes = Etc::from(sup).read()?;
+            return Ok(toml::from_slice::<Config>(&bytes)?.global(false));
+        }
 
-        let etc = Etc::from(&home);
-        let config = etc.open("config.toml")?;
+        let mut home = dirs::home_dir().expect("Could not find home dir");
+        home.push(".sup/config.toml");
+
+        let config = Etc::from(home);
         if config.real_path()?.exists() {
             let bytes = config.read()?;
             if let Ok(cur) = toml::from_slice::<Config>(&bytes) {
                 Ok(cur)
             } else {
-                Self::gen_default(&config)
+                Self::gen_default(&config, true)
             }
         } else {
-            Self::gen_default(&config)
+            Self::gen_default(&config, true)
         }
     }
 }
