@@ -121,9 +121,9 @@ dependencies = [
 
 [[package]]
 name = "etc"
-version = "0.1.14"
+version = "0.1.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "42edd4c7a89ae9c59214528e8ddf18da1f5e8ffd2a8aed02811e3fc1c8ccc1bc"
+checksum = "bb57be5ba8ec7e3e604ac93858ae49d2b5842b6eaa72400a79ed68d4f97ded1d"
 
 [[package]]
 name = "getrandom"

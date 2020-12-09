@@ -37,8 +37,8 @@ pub fn exec(mut registry: Registry, path: PathBuf, tag: Option<String>) -> Resul
         if Etc::from(&registry.dir).find("node-template").is_err() {
             println!(
                 "Registry {} with tag {:?} doesn't have node-template, \
-                 update {:?} failed, please retry with `--update` flag",
-                &registry.config.node.registry, &tag, &path
+                 please retry with `--update` flag",
+                &registry.config.node.registry, &tag,
             );
             println!("failed.");
             return Ok(());
