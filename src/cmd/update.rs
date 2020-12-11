@@ -18,9 +18,9 @@ pub fn exec(mut registry: Registry, path: PathBuf, tag: Option<String>) -> Resul
     if let Some(ref tag) = tag {
         if !tags.contains(&tag) {
             println!(
-                "Doesn't have tag {} in the registry, \
+                "Doesn't have tag {} in the registry {}, \
                  please retry with `sup -p update -t {}`",
-                &tag, &tag
+                &tag, &registry.config.node.registry, &tag,
             );
             return Ok(());
         } else {
@@ -40,9 +40,9 @@ pub fn exec(mut registry: Registry, path: PathBuf, tag: Option<String>) -> Resul
             // Checkout to the target tag
             if registry.checkout(&tag).is_err() {
                 println!(
-                    "Doesn't have tag {} in registry, \
+                    "Doesn't have tag {} in registry {}, \
                      please retry with `sup -p update -t {}`",
-                    &tag, &tag,
+                    &tag, &registry.config.node.registry, &tag,
                 );
                 println!("failed.");
                 return Ok(());
