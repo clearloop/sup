@@ -67,6 +67,7 @@
 #![warn(missing_docs)]
 pub mod cmd;
 mod config;
+mod msg;
 mod registry;
 mod result;
 

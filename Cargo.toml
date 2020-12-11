@@ -1,6 +1,6 @@
 [package]
 name = "sup"
-version = "0.2.9"
+version = "0.2.10"
 authors = ["clearloop <udtrokia@gmail.com>"]
 edition = "2018"
 description = "Substrate package manager"
@@ -17,13 +17,10 @@ include = [
 keywords = ["substrate"]
 readme = './README.md'
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [[bin]]
 name = "sup"
 path = "src/bin/sup.rs"
 
-# deps
 [dependencies]
 dirs = "3.0.1"
 etc = "0.1.16"

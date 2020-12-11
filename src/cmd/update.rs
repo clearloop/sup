@@ -18,8 +18,9 @@ pub fn exec(mut registry: Registry, path: PathBuf, tag: Option<String>) -> Resul
     if let Some(ref tag) = tag {
         if !tags.contains(&tag) {
             println!(
-                "Doesn't have tag {} in registry, please retry with `--update` flag",
-                &tag
+                "Doesn't have tag {} in the registry, \
+                 please retry with `sup -p update -t {}`",
+                &tag, &tag
             );
             return Ok(());
         } else {
@@ -34,23 +35,14 @@ pub fn exec(mut registry: Registry, path: PathBuf, tag: Option<String>) -> Resul
 
         registry.config.node.tag(tag);
     } else {
-        if Etc::from(&registry.dir).find("node-template").is_err() {
-            println!(
-                "Registry {} with tag {:?} doesn't have node-template, \
-                 please retry with `--update` flag",
-                &registry.config.node.registry, &tag,
-            );
-            println!("failed.");
-            return Ok(());
-        }
-
         // If has tag field in current `.sup.toml`
         if let Some(ref tag) = registry.config.node.tag {
             // Checkout to the target tag
             if registry.checkout(&tag).is_err() {
                 println!(
-                    "Doesn't have tag {} in registry, please retry with `--update` flag",
-                    &tag
+                    "Doesn't have tag {} in registry, \
+                     please retry with `sup -p update -t {}`",
+                    &tag, &tag,
                 );
                 println!("failed.");
                 return Ok(());
@@ -63,6 +55,17 @@ pub fn exec(mut registry: Registry, path: PathBuf, tag: Option<String>) -> Resul
                 path.to_str().unwrap_or(".")
             );
         }
+    }
+
+    // Check if have `node-template`
+    if Etc::from(&registry.dir).find("node-template").is_err() {
+        println!(
+            "Registry {} doesn't have `node-template`, \
+             please retry with  `sup -p update -t <tag>",
+            &registry.config.node.registry,
+        );
+        println!("failed.");
+        return Ok(());
     }
 
     // Operate tags
