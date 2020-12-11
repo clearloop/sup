@@ -10,6 +10,7 @@ use toml::{de::Error as DeToml, ser::Error as SerToml};
 
 /// The custom sup error
 pub struct Sup(String);
+
 impl Display for Sup {
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
         f.write_str(&self.0)

@@ -87,7 +87,10 @@ pub fn exec(mut registry: Registry, target: PathBuf, skip: bool, mut tag: String
         let mut dst = String::with_capacity(128);
         mani.serialize(Serializer::pretty(&mut dst).pretty_array(true))?;
         Etc::from(&target).open("Cargo.toml")?.write(dst)?;
-        println!("Created node-template {:?} succeed!", &target);
+        println!(
+            "Created node-template {:?} with tag {} succeed!",
+            &target, &tag
+        );
     } else {
         println!(
             "The registry {} at tag {} doesn't have node-template",
