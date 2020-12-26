@@ -61,23 +61,26 @@ pub fn rustup() -> Result<()> {
 }
 
 /// Exec command `new`
-pub fn exec(mut registry: Registry, target: PathBuf, skip: bool, mut tag: String) -> Result<()> {
+pub fn exec(
+    mut registry: Registry,
+    target: PathBuf,
+    skip: bool,
+    tag: Option<String>,
+) -> Result<()> {
     if !skip {
         rustup()?;
     }
-    let has_tag = !tag.is_empty();
 
     // Checkout tag
     let tags = registry.tag()?;
-    if tags.is_empty() {
+    if tag.is_some() && tags.is_empty() {
         registry.update()?;
     }
 
-    if !has_tag || !tags.contains(&tag) {
-        tag = registry.latest_tag()?;
+    if let Some(tag) = &tag {
+        registry.checkout(tag)?;
     }
 
-    registry.checkout(&tag)?;
     let substrate = Etc::from(&registry.dir);
     if let Ok(template) = substrate.find("node-template") {
         etc::cp_r(template, PathBuf::from(&target))?;
@@ -87,24 +90,37 @@ pub fn exec(mut registry: Registry, target: PathBuf, skip: bool, mut tag: String
         let mut dst = String::with_capacity(128);
         mani.serialize(Serializer::pretty(&mut dst).pretty_array(true))?;
         Etc::from(&target).open("Cargo.toml")?.write(dst)?;
-        println!(
-            "Created node-template {:?} with tag {} succeed!",
-            &target, &tag
-        );
+
+        if let Some(tag) = &tag {
+            println!(
+                "Created node-template {:?} with tag {} succeed!",
+                &target, &tag
+            );
+        } else {
+            println!("Created node-template {:?} without tag succeed!", &target,);
+        }
     } else {
-        println!(
-            "The registry {} at tag {} doesn't have node-template",
-            &registry.config.node.registry, &tag
-        );
+        if let Some(tag) = &tag {
+            println!(
+                "The registry {} at tag {} doesn't have node-template",
+                &registry.config.node.registry, &tag
+            );
+        } else {
+            println!(
+                "The registry {} without tag doesn't have node-template",
+                &registry.config.node.registry
+            )
+        }
         println!("failed.");
         return Ok(());
     }
 
     // Checkout back to the latest commit
     registry.checkout("master")?;
-    if has_tag {
+    if let Some(tag) = tag {
         registry.config.node.tag(&tag);
     }
+
     registry.config.gen(target)?;
     println!("ok!");
     Ok(())
