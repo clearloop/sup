@@ -29,8 +29,8 @@ enum Command {
         #[structopt(short, long)]
         skip: bool,
         /// Specify a tag to generate
-        #[structopt(short, long, default_value = "v2.0.0")]
-        tag: String,
+        #[structopt(short, long)]
+        tag: Option<String>,
     },
     /// Update the target substrate project
     Update {
